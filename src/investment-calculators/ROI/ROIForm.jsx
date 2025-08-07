@@ -1,35 +1,46 @@
 import React, { useState } from "react";
 import { calculateROI } from "../../utils/formulas";
 
+const SectionTitleWithTooltip = ({ title, description }) => {
+  return (
+    <div className="section-title-container">
+      <h2 className="section-title">{title}</h2>
+      <div className="tooltip">
+        <span className="tooltip-text">{description}</span>
+      </div>
+    </div>
+  );
+};
+
 function ROIForm({ setResults }) {
   const [inputs, setInputs] = useState({
     // Purchase Info
-    price: 300000,
-    closingCosts: 9000,
-    downPayment: 60000,
-    interestRate: 4,
-    loanTerm: 30,
+    price: "",
+    closingCosts: "",
+    downPayment: "",
+    interestRate: "",
+    loanTerm: "",
 
     // Income
-    rent: 2000,
-    otherIncome: 50,
+    rent: "",
+    otherIncome: "",
 
     // Operating Expenses
-    taxes: 3600,
-    insurance: 1200,
-    maintenance: 1800,
-    propertyManagement: 1800,
-    utilities: 1200,
-    hoaFees: 600,
-    vacancyRate: 5,
+    taxes: "",
+    insurance: "",
+    maintenance: "",
+    propertyManagement: "",
+    utilities: "",
+    hoaFees: "",
+    vacancyRate: "",
 
     // Appreciation & Exit
-    appreciationRate: 3,
-    rentIncreaseRate: 2,
-    futureValue: 400000,
+    appreciationRate: "",
+    rentIncreaseRate: "",
+    futureValue: "",
 
     // Holding Period
-    holdingPeriod: 5,
+    holdingPeriod: "",
   });
 
   const handleChange = (e) => {
@@ -73,7 +84,10 @@ function ROIForm({ setResults }) {
     <form onSubmit={handleSubmit} className="form-container">
       {/* Purchase Information Section */}
       <div className="form-section">
-        <h2>Purchase Info</h2>
+        <SectionTitleWithTooltip
+          title="Purchase Info"
+          description="Property purchase details including price, down payment, and loan terms"
+        />
         <div className="form-row">
           <div className="form-group">
             <label>Price ($)</label>
@@ -133,10 +147,13 @@ function ROIForm({ setResults }) {
 
       {/* Income Section */}
       <div className="form-section">
-        <h2>Income</h2>
+        <SectionTitleWithTooltip
+          title="Income"
+          description="Monthly rental income and other revenue sources"
+        />
         <div className="form-row">
           <div className="form-group">
-            <label>Monthly Rent ($)</label>
+            <label>Monthly Income ($)</label>
             <input
               name="rent"
               type="number"
@@ -159,7 +176,10 @@ function ROIForm({ setResults }) {
 
       {/* Operating Expenses Section */}
       <div className="form-section">
-        <h2>Operating Expenses</h2>
+        <SectionTitleWithTooltip
+          title="Operating Expenses"
+          description="Annual costs including taxes, insurance, maintenance, and other fees"
+        />
         <div className="form-row">
           <div className="form-group">
             <label>Taxes ($)</label>
@@ -236,7 +256,10 @@ function ROIForm({ setResults }) {
 
       {/* Appreciation & Exit Section */}
       <div className="form-section">
-        <h2>Appreciation & Exit</h2>
+        <SectionTitleWithTooltip
+          title="Appreciation & Exit"
+          description="Projected growth rates and estimated future property value"
+        />
         <div className="form-row">
           <div className="form-group">
             <label>Appreciation Rate (%)</label>
@@ -272,7 +295,10 @@ function ROIForm({ setResults }) {
 
       {/* Holding Period Section */}
       <div className="form-section">
-        <h2>Holding Period</h2>
+        <SectionTitleWithTooltip
+          title="Holding Period"
+          description="Number of years you plan to own the property"
+        />
         <div className="form-row">
           <div className="form-group">
             <label>Years</label>

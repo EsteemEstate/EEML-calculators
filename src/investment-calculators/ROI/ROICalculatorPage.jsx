@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import ROIForm from "./ROIForm";
 import ROIResults from "./ROIResults";
 import ROIChart from "./ROIChart";
+import ROIPieChart from "./ROIPieChart"; // ← NEW
 import "../../styles/ROICalculator.css";
 
 const ROICalculatorPage = () => {
@@ -11,7 +12,7 @@ const ROICalculatorPage = () => {
     <div className="roi-calculator-wrapper">
       <div className="roi-calculator-page">
         <header className="calculator-header">
-          <h1>Real Estate ROI Calculator</h1>
+          <h1>EEML ROI Calculator</h1>
           <p className="subtitle">
             Analyze your investment property's potential returns
           </p>
@@ -26,8 +27,13 @@ const ROICalculatorPage = () => {
             {results ? (
               <>
                 <ROIResults data={results} />
-                <div className="chart-wrapper">
-                  <ROIChart data={results} />
+                <div className="chart-grid">
+                  <div className="chart-wrapper">
+                    <ROIChart data={results} />
+                  </div>
+                  <div className="chart-wrapper">
+                    <ROIPieChart data={results} />
+                  </div>
                 </div>
               </>
             ) : (
