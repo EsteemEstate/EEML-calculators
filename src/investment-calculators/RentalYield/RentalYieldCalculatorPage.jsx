@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import RentalYieldForm from "./RentalYieldForm";
 import RentalYieldResults from "./RentalYieldResults";
-import RentalYieldChart from "./RentalYieldChart"; // Import your chart component
+import RentalYieldChart from "./RentalYieldChart";
 import {
   calculateGrossYield,
   calculateNetYield,
@@ -10,70 +10,120 @@ import {
   calculateCashFlow,
   calculateAnnualRent,
   calculatePaybackPeriod,
+  calculateMortgagePayment,
   sumValues,
-} from "../../utils/formulas"; // Adjust the path as necessary
+  calculateTotalCashInvested,
+} from "../../utils/rentalFormulas";
 import "../../styles/RentalYieldCalculator.css";
 
 const RentalYieldCalculatorPage = () => {
   const [results, setResults] = useState(null);
+  const [isCalculating, setIsCalculating] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleCalculate = (formData) => {
-    // Calculate annual rent adjusted for vacancy
-    const annualRent = calculateAnnualRent(
-      formData.monthlyRent,
-      formData.vacancyRate
-    );
+    setIsCalculating(true);
+    setError(null);
 
-    // Calculate total income
-    const totalIncome = annualRent + (formData.otherIncome || 0);
+    try {
+      // Parse all numeric inputs with validation
+      const parse = (val) => {
+        const num = parseFloat(val);
+        return isNaN(num) ? 0 : num;
+      };
 
-    // Calculate total expenses
-    const expenses = sumValues([
-      formData.managementFees,
-      formData.maintenance,
-      formData.propertyTaxes,
-      formData.insurance,
-      formData.utilities,
-      formData.hoaFees,
-      formData.security,
-      formData.cleaning,
-      formData.marketing,
-      formData.legalAccounting,
-    ]);
+      // Property details
+      const propertyPrice = parse(formData.propertyPrice);
+      const monthlyRent = parse(formData.monthlyRent);
+      const otherIncome = parse(formData.otherIncome);
+      const vacancyRate = Math.min(
+        Math.max(parse(formData.vacancyRate), 0),
+        100
+      ); // Clamp 0-100
 
-    // Calculate cash flow (assuming no annual debt service for simplicity)
-    const cashFlow = calculateCashFlow(totalIncome, expenses, 0); // Pass 0 for annualDebtService if not used
+      // Calculate down payment if not provided
+      const mortgageAmount = parse(formData.mortgageAmount);
+      const downPayment =
+        parse(formData.downPayment) || propertyPrice - mortgageAmount;
 
-    // Calculate results
-    const grossYield = calculateGrossYield(annualRent, formData.propertyPrice);
-    const netYield = calculateNetYield(
-      annualRent,
-      expenses,
-      formData.propertyPrice
-    );
-    const capRate = calculateCapRate(
-      totalIncome,
-      expenses,
-      formData.propertyPrice
-    );
-    const cashOnCash = calculateCashOnCash(cashFlow, formData.downPayment); // Assuming downPayment is provided
-    const paybackPeriod = calculatePaybackPeriod(
-      formData.propertyPrice,
-      cashFlow
-    );
+      // Acquisition costs
+      const acquisitionCosts = sumValues([
+        parse(formData.stampDuty),
+        parse(formData.legalFees),
+        parse(formData.registrationFees),
+        parse(formData.agentFees),
+        parse(formData.renovationCosts),
+      ]);
 
-    // Set results
-    setResults({
-      grossYield,
-      netYield,
-      capRate,
-      cashOnCash,
-      annualRent,
-      totalIncome,
-      expenses,
-      cashFlow,
-      paybackPeriod,
-    });
+      // Financing
+      const interestRate = parse(formData.interestRate);
+      const loanTermYears = parse(formData.loanTermYears);
+
+      // Validate critical inputs
+      if (propertyPrice <= 0 || monthlyRent <= 0) {
+        throw new Error(
+          "Property price and monthly rent must be positive values"
+        );
+      }
+
+      // Calculate core values
+      const annualRent = calculateAnnualRent(monthlyRent, vacancyRate);
+      const totalIncome = annualRent + otherIncome;
+
+      // Expenses
+      const expenses = sumValues([
+        parse(formData.managementFees),
+        parse(formData.maintenance),
+        parse(formData.propertyTaxes),
+        parse(formData.insurance),
+        parse(formData.utilities),
+        parse(formData.hoaFees),
+        parse(formData.security),
+        parse(formData.cleaning),
+        parse(formData.marketing),
+        parse(formData.legalAccounting),
+        parse(formData.vacancyAllowance),
+      ]);
+
+      // Mortgage calculations
+      const annualDebtService =
+        formData.loanType === "P+I"
+          ? calculateMortgagePayment(
+              mortgageAmount,
+              interestRate,
+              loanTermYears
+            ) * 12
+          : mortgageAmount * (interestRate / 100);
+
+      const cashFlow = calculateCashFlow(
+        totalIncome,
+        expenses,
+        annualDebtService
+      );
+      const totalCashInvested = calculateTotalCashInvested(
+        propertyPrice,
+        mortgageAmount,
+        acquisitionCosts
+      );
+
+      // Set results
+      setResults({
+        grossYield: calculateGrossYield(annualRent, propertyPrice),
+        netYield: calculateNetYield(annualRent, expenses, propertyPrice),
+        capRate: calculateCapRate(totalIncome - expenses, propertyPrice),
+        cashOnCash: calculateCashOnCash(cashFlow, totalCashInvested),
+        annualRent,
+        totalIncome,
+        expenses,
+        cashFlow,
+        paybackPeriod: calculatePaybackPeriod(totalCashInvested, cashFlow),
+      });
+    } catch (err) {
+      console.error("Calculation error:", err);
+      setError(err.message || "An error occurred during calculation");
+    } finally {
+      setIsCalculating(false);
+    }
   };
 
   return (
@@ -83,22 +133,28 @@ const RentalYieldCalculatorPage = () => {
         <p>Analyze your rental property's potential returns</p>
       </header>
 
+      {error && (
+        <div className="error-message">
+          <p>Error: {error}</p>
+        </div>
+      )}
+
       <div className="calculator-grid">
-        {/* Left Column - Form */}
         <div className="form-column">
           <RentalYieldForm onCalculate={handleCalculate} />
         </div>
 
-        {/* Right Column - Results */}
         <div className="results-column">
-          {results ? (
+          {isCalculating ? (
+            <div className="loading-state">
+              <div className="spinner"></div>
+              <p>Calculating results...</p>
+            </div>
+          ) : results ? (
             <>
               <RentalYieldResults results={results} />
-              <div className="chart-grid">
-                <div className="chart-wrapper">
-                  <RentalYieldChart data={results} />
-                </div>
-                {/* Add any additional charts here */}
+              <div className="chart-wrapper">
+                <RentalYieldChart data={results} />
               </div>
             </>
           ) : (
