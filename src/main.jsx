@@ -1,10 +1,15 @@
-// src/main.jsx
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
-import "./index.css";
+import "./App.css";
 
-ReactDOM.createRoot(document.getElementById("root")).render(
+// Add debug class to body in development
+if (process.env.NODE_ENV === "development") {
+  document.body.classList.add("debug");
+}
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(
   <React.StrictMode>
     <App />
   </React.StrictMode>

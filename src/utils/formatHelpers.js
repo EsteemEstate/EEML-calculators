@@ -1,12 +1,10 @@
 export const formatPercent = (value) =>
-  typeof value === "number" ? `${value.toFixed(2)}%` : "N/A";
+  typeof value === "number" ? `${value.toFixed(2)}%` : "0.00%";
 
 export const formatCurrency = (value) =>
   typeof value === "number"
     ? value.toLocaleString("en-US", {
         style: "currency",
         currency: "USD",
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
       })
-    : "N/A";
+    : "$0";
