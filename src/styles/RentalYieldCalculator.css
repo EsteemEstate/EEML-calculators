@@ -369,3 +369,65 @@
 .negative-value {
   background-color: #ffcdd2; /* Light red */
 }
+
+.calculator-grid {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.info-column {
+  flex: 1;
+  background: #f9fafb;
+  border: 1px solid #e1e5e9; /* Softer border color */
+  padding: 2rem; /* Increased from 1.5rem */
+  border-radius: 10px; /* Slightly more rounded */
+  max-width: 360px; /* Increased from 300px */
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05); /* Subtle depth */
+  margin-right: 1.5rem; /* Ensures separation from form column */
+
+  /* Improved internal spacing */
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem; /* Space between child elements */
+}
+
+/* Info section headings */
+.info-column h3 {
+  font-size: 1.25rem;
+  color: #2c3e50;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #e1e5e9;
+}
+
+/* Info items */
+.info-item {
+  padding: 0.75rem;
+  background: white;
+  border-radius: 6px;
+  border-left: 3px solid #3498db; /* Accent bar */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* Responsive adjustment */
+@media (max-width: 1200px) {
+  .info-column {
+    max-width: none; /* Full width when stacked */
+    margin-right: 0;
+    margin-bottom: 2rem;
+  }
+}
+
+.form-column {
+  flex: 2;
+  min-width: 320px;
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--border);
+}
+
+.results-column {
+  flex: 3;
+}

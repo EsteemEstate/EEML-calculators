@@ -142,6 +142,90 @@ export function calculateAnnualRent(monthlyRent, vacancyRate = 0) {
 }
 
 /**
+ * Calculate Total Annual Income
+ * @param {number} monthlyRent - Monthly rent
+ * @param {number} otherIncome - Other annual income
+ * @param {number} vacancyRate - Vacancy rate percentage
+ * @returns {number} Total annual income (rounded to 2 decimals)
+ */
+export function calculateTotalAnnualIncome(
+  monthlyRent,
+  otherIncome,
+  vacancyRate
+) {
+  const annualRent = calculateAnnualRent(monthlyRent, vacancyRate);
+  return parseFloat((annualRent + (otherIncome || 0)).toFixed(2));
+}
+
+/**
+ * Calculate Total Annual Expenses
+ * @param {Object} expenses - Object containing various expense fields
+ * @returns {number} Total annual expenses (rounded to 2 decimals)
+ */
+export function calculateTotalAnnualExpenses(expenses) {
+  const {
+    managementFees,
+    maintenance,
+    propertyTaxes,
+    insurance,
+    utilities,
+    hoaFees,
+    security,
+    cleaning,
+    marketing,
+    legalAccounting,
+    vacancyAllowance,
+    badDebtAllowance,
+    licensingFees,
+    camRecoveries,
+    turnoverRentClauses,
+  } = expenses;
+
+  return sumValues([
+    managementFees,
+    maintenance,
+    propertyTaxes,
+    insurance,
+    utilities,
+    hoaFees,
+    security,
+    cleaning,
+    marketing,
+    legalAccounting,
+    vacancyAllowance,
+    badDebtAllowance,
+    licensingFees,
+    camRecoveries,
+    turnoverRentClauses,
+  ]);
+}
+
+/**
+ * Calculate Annual Cash Flow with New Inputs
+ * @param {number} monthlyRent - Monthly rent
+ * @param {number} otherIncome - Other annual income
+ * @param {Object} expenses - Object containing various expense fields
+ * @param {number} debtService - Annual mortgage payments
+ * @param {number} vacancyRate - Vacancy rate percentage
+ * @returns {number} Annual cash flow (rounded to 2 decimals)
+ */
+export function calculateAnnualCashFlowWithNewInputs(
+  monthlyRent,
+  otherIncome,
+  expenses,
+  debtService,
+  vacancyRate
+) {
+  const totalIncome = calculateTotalAnnualIncome(
+    monthlyRent,
+    otherIncome,
+    vacancyRate
+  );
+  const totalExpenses = calculateTotalAnnualExpenses(expenses);
+  return calculateCashFlow(totalIncome, totalExpenses, debtService);
+}
+
+/**
  * Sum values with type safety
  * @param {Array} values - Array of numbers/strings
  * @returns {number} Sum (rounded to 2 decimals)

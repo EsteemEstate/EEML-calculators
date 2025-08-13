@@ -1,5 +1,5 @@
 import React from "react";
-import { formatPercent, formatCurrency } from "../../utils/formatHelpers"; // Create this helper file for formatting functions
+import { formatPercent, formatCurrency } from "../../utils/formatHelpers"; // Ensure this helper file exists for formatting functions
 
 const RentalYieldResults = ({ results }) => {
   if (!results) {

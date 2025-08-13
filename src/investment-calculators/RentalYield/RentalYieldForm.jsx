@@ -6,7 +6,7 @@ const RentalYieldForm = ({ onCalculate }) => {
     propertyPrice: "",
     monthlyRent: "",
     otherIncome: "",
-    vacancyRate: 5,
+    vacancyRate: "",
     stampDuty: "",
     legalFees: "",
     registrationFees: "",
@@ -27,6 +27,39 @@ const RentalYieldForm = ({ onCalculate }) => {
     marketing: "",
     legalAccounting: "",
     vacancyAllowance: "",
+    propertyType: "", // New field
+    size: "", // New field
+    numberOfUnits: "", // New field
+    ageCondition: "", // New field
+    occupancyStatus: "", // New field
+    foreignBuyerSurcharge: "", // New field
+    valuationCosts: "", // New field
+    bankProcessingFees: "", // New field
+    recurringFitOutCosts: "", // New field
+    ltvRatio: "", // New field
+    repaymentType: "P+I", // New field
+    refinancingAssumptions: "", // New field
+    foreignExchangeRate: "", // New field
+    inflationRate: "", // New field
+    escalationClauses: "", // New field
+    leaseLength: "", // New field
+    shortTermMetrics: "", // New field
+    additionalIncomeStreams: "", // New field
+    badDebtAllowance: "", // New field
+    licensingFees: "", // New field
+    camRecoveries: "", // New field
+    turnoverRentClauses: "", // New field
+    leaseType: "", // New field
+    rentFreePeriods: "", // New field
+    incentives: "", // New field
+    cpiMarketReviewClauses: "", // New field
+    holdingPeriod: "", // New field
+    expectedSalePrice: "", // New field
+    sellingCosts: "", // New field
+    currencyConverter: "", // New field
+    localTaxRates: "", // New field
+    sensitivityTestingInputs: "", // New field
+    portfolioAnalysis: "", // New field
   });
 
   const handleChange = (e) => {
@@ -89,6 +122,51 @@ const RentalYieldForm = ({ onCalculate }) => {
               onChange={handleChange}
             />
           </div>
+          <div className="form-group">
+            <label>Property Type</label>
+            <input
+              type="text"
+              name="propertyType"
+              value={formData.propertyType}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="form-group">
+            <label>Size (sq ft or sq m)</label>
+            <input
+              type="text"
+              name="size"
+              value={formData.size}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="form-group">
+            <label>Number of Units</label>
+            <input
+              type="number"
+              name="numberOfUnits"
+              value={formData.numberOfUnits}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="form-group">
+            <label>Age/Condition</label>
+            <input
+              type="text"
+              name="ageCondition"
+              value={formData.ageCondition}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="form-group">
+            <label>Occupancy Status</label>
+            <input
+              type="text"
+              name="occupancyStatus"
+              value={formData.occupancyStatus}
+              onChange={handleChange}
+            />
+          </div>
         </div>
       </div>
 
@@ -144,6 +222,42 @@ const RentalYieldForm = ({ onCalculate }) => {
               onChange={handleChange}
             />
           </div>
+          <div className="form-group">
+            <label>Foreign Buyer Surcharge ($)</label>
+            <input
+              type="number"
+              name="foreignBuyerSurcharge"
+              value={formData.foreignBuyerSurcharge}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="form-group">
+            <label>Valuation/Survey Costs ($)</label>
+            <input
+              type="number"
+              name="valuationCosts"
+              value={formData.valuationCosts}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="form-group">
+            <label>Bank/Mortgage Processing Fees ($)</label>
+            <input
+              type="number"
+              name="bankProcessingFees"
+              value={formData.bankProcessingFees}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="form-group">
+            <label>Recurring Fit-Out Costs ($)</label>
+            <input
+              type="number"
+              name="recurringFitOutCosts"
+              value={formData.recurringFitOutCosts}
+              onChange={handleChange}
+            />
+          </div>
         </div>
       </div>
 
@@ -192,6 +306,53 @@ const RentalYieldForm = ({ onCalculate }) => {
               <option value="P+I">Principal + Interest</option>
               <option value="InterestOnly">Interest Only</option>
             </select>
+          </div>
+          <div className="form-group">
+            <label>Loan-to-Value (LTV) Ratio (%)</label>
+            <input
+              type="number"
+              name="ltvRatio"
+              value={formData.ltvRatio}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="form-group">
+            <label>Repayment Type</label>
+            <select
+              name="repaymentType"
+              value={formData.repaymentType}
+              onChange={handleChange}
+            >
+              <option value="P+I">Principal + Interest</option>
+              <option value="InterestOnly">Interest Only</option>
+            </select>
+          </div>
+          <div className="form-group">
+            <label>Refinancing Assumptions</label>
+            <input
+              type="text"
+              name="refinancingAssumptions"
+              value={formData.refinancingAssumptions}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="form-group">
+            <label>Foreign Exchange Rate</label>
+            <input
+              type="text"
+              name="foreignExchangeRate"
+              value={formData.foreignExchangeRate}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="form-group">
+            <label>Inflation Rate (%)</label>
+            <input
+              type="number"
+              name="inflationRate"
+              value={formData.inflationRate}
+              onChange={handleChange}
+            />
           </div>
         </div>
       </div>
@@ -302,11 +463,177 @@ const RentalYieldForm = ({ onCalculate }) => {
               onChange={handleChange}
             />
           </div>
+          <div className="form-group">
+            <label>Bad Debt Allowance ($)</label>
+            <input
+              type="number"
+              name="badDebtAllowance"
+              value={formData.badDebtAllowance}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="form-group">
+            <label>Licensing Fees ($)</label>
+            <input
+              type="number"
+              name="licensingFees"
+              value={formData.licensingFees}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="form-group">
+            <label>Common Area Maintenance (CAM) Recoveries ($)</label>
+            <input
+              type="number"
+              name="camRecoveries"
+              value={formData.camRecoveries}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="form-group">
+            <label>Turnover Rent Clauses (%)</label>
+            <input
+              type="number"
+              name="turnoverRentClauses"
+              value={formData.turnoverRentClauses}
+              onChange={handleChange}
+            />
+          </div>
         </div>
       </div>
 
+      {/* Commercial Lease Variables Section */}
+      <div className="form-section">
+        <SectionTitleWithTooltip
+          title="Commercial Lease Variables"
+          description="Enter the details of the commercial lease."
+        />
+        <div className="input-grid">
+          <div className="form-group">
+            <label>Lease Type</label>
+            <input
+              type="text"
+              name="leaseType"
+              value={formData.leaseType}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="form-group">
+            <label>Rent-Free Periods (months)</label>
+            <input
+              type="number"
+              name="rentFreePeriods"
+              value={formData.rentFreePeriods}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="form-group">
+            <label>Incentives</label>
+            <input
+              type="text"
+              name="incentives"
+              value={formData.incentives}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="form-group">
+            <label>CPI/Market Review Clauses</label>
+            <input
+              type="text"
+              name="cpiMarketReviewClauses"
+              value={formData.cpiMarketReviewClauses}
+              onChange={handleChange}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Sale/Exit Assumptions Section */}
+      <div className="form-section">
+        <SectionTitleWithTooltip
+          title="Sale/Exit Assumptions"
+          description="Enter the assumptions for sale or exit."
+        />
+        <div className="input-grid">
+          <div className="form-group">
+            <label>Holding Period (years)</label>
+            <input
+              type="number"
+              name="holdingPeriod"
+              value={formData.holdingPeriod}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="form-group">
+            <label>Expected Sale Price ($)</label>
+            <input
+              type="number"
+              name="expectedSalePrice"
+              value={formData.expectedSalePrice}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="form-group">
+            <label>Selling Costs ($)</label>
+            <input
+              type="number"
+              name="sellingCosts"
+              value={formData.sellingCosts}
+              onChange={handleChange}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Advanced Features Section */}
+      <div className="form-section">
+        <SectionTitleWithTooltip
+          title="Advanced Features"
+          description="Enter advanced features for the property."
+        />
+        <div className="input-grid">
+          <div className="form-group">
+            <label>Currency Converter</label>
+            <input
+              type="text"
+              name="currencyConverter"
+              value={formData.currencyConverter}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="form-group">
+            <label>Local Tax Rates</label>
+            <input
+              type="text"
+              name="localTaxRates"
+              value={formData.localTaxRates}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="form-group">
+            <label>Sensitivity Testing Inputs</label>
+            <input
+              type="text"
+              name="sensitivityTestingInputs"
+              value={formData.sensitivityTestingInputs}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="form-group">
+            <label>Portfolio Analysis</label>
+            <input
+              type="text"
+              name="portfolioAnalysis"
+              value={formData.portfolioAnalysis}
+              onChange={handleChange}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Submit Button */}
       <button type="submit" className="submit-button">
-        Calculate Yield
+        Calculate Rental Yield
       </button>
     </form>
   );

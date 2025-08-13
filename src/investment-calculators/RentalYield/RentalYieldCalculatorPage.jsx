@@ -26,51 +26,47 @@ const RentalYieldCalculatorPage = () => {
     setError(null);
 
     try {
-      // Parse all numeric inputs with validation
       const parse = (val) => {
         const num = parseFloat(val);
         return isNaN(num) ? 0 : num;
       };
 
-      // Property details
       const propertyPrice = parse(formData.propertyPrice);
       const monthlyRent = parse(formData.monthlyRent);
       const otherIncome = parse(formData.otherIncome);
       const vacancyRate = Math.min(
         Math.max(parse(formData.vacancyRate), 0),
         100
-      ); // Clamp 0-100
+      );
 
-      // Calculate down payment if not provided
       const mortgageAmount = parse(formData.mortgageAmount);
       const downPayment =
         parse(formData.downPayment) || propertyPrice - mortgageAmount;
 
-      // Acquisition costs
       const acquisitionCosts = sumValues([
         parse(formData.stampDuty),
         parse(formData.legalFees),
         parse(formData.registrationFees),
         parse(formData.agentFees),
         parse(formData.renovationCosts),
+        parse(formData.foreignBuyerSurcharge),
+        parse(formData.valuationCosts),
+        parse(formData.bankProcessingFees),
+        parse(formData.recurringFitOutCosts),
       ]);
 
-      // Financing
       const interestRate = parse(formData.interestRate);
       const loanTermYears = parse(formData.loanTermYears);
 
-      // Validate critical inputs
       if (propertyPrice <= 0 || monthlyRent <= 0) {
         throw new Error(
           "Property price and monthly rent must be positive values"
         );
       }
 
-      // Calculate core values
       const annualRent = calculateAnnualRent(monthlyRent, vacancyRate);
       const totalIncome = annualRent + otherIncome;
 
-      // Expenses
       const expenses = sumValues([
         parse(formData.managementFees),
         parse(formData.maintenance),
@@ -83,9 +79,12 @@ const RentalYieldCalculatorPage = () => {
         parse(formData.marketing),
         parse(formData.legalAccounting),
         parse(formData.vacancyAllowance),
+        parse(formData.badDebtAllowance),
+        parse(formData.licensingFees),
+        parse(formData.camRecoveries),
+        parse(formData.turnoverRentClauses),
       ]);
 
-      // Mortgage calculations
       const annualDebtService =
         formData.loanType === "P+I"
           ? calculateMortgagePayment(
@@ -106,7 +105,6 @@ const RentalYieldCalculatorPage = () => {
         acquisitionCosts
       );
 
-      // Set results
       setResults({
         grossYield: calculateGrossYield(annualRent, propertyPrice),
         netYield: calculateNetYield(annualRent, expenses, propertyPrice),
@@ -140,10 +138,37 @@ const RentalYieldCalculatorPage = () => {
       )}
 
       <div className="calculator-grid">
+        {/* Left Column - Info Box */}
+        <aside className="info-column">
+          <h2>What is Rental Yield?</h2>
+          <p>
+            Rental yield measures the annual income you earn from a property
+            (through rent) as a percentage of its value or purchase price. It’s
+            a key metric for comparing potential investments.
+          </p>
+          <h4>Two Types:</h4>
+          <ul>
+            <li>
+              <strong>Gross Yield:</strong> Annual rent ÷ property value × 100
+            </li>
+            <li>
+              <strong>Net Yield:</strong> (Annual rent − expenses) ÷ property
+              value × 100
+            </li>
+          </ul>
+          <p>
+            A higher yield generally means better cash flow, but it’s important
+            to also consider risk factors, property location, and growth
+            potential.
+          </p>
+        </aside>
+
+        {/* Middle Column - Form */}
         <div className="form-column">
           <RentalYieldForm onCalculate={handleCalculate} />
         </div>
 
+        {/* Right Column - Results */}
         <div className="results-column">
           {isCalculating ? (
             <div className="loading-state">

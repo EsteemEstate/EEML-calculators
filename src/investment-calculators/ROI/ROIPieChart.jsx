@@ -51,8 +51,8 @@ function ROIPieChart({ data }) {
           "#FF9F40",
         ],
         borderColor: "#f0f4f8", // bg-color
-        borderWidth: 2,
-        hoverBorderWidth: 3,
+        borderWidth: 1, // Reduced border width
+        hoverBorderWidth: 2, // Reduced hover border width
         hoverBorderColor: "#fff",
       },
     ],
@@ -109,32 +109,40 @@ function ROIPieChart({ data }) {
           const dataset = context.chart.data.datasets[0].data;
           const total = dataset.reduce((acc, val) => acc + val, 0);
           const percentage = ((value / total) * 100).toFixed(1);
-          return `${percentage}%`;
+          return percentage >= 10 ? `${percentage}%` : ""; // Only show labels >=10%
         },
         color: "#fff",
         font: {
           family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
           weight: "600",
-          size: 12,
+          size: 10, // Reduced font size
         },
         textAlign: "center",
         anchor: "center",
-        offset: 0,
+        offset: 5, // Added offset to push labels outward
         clamp: true,
         clip: false,
         display: (context) => {
           const value = context.dataset.data[context.dataIndex];
-          return value > 0; // Only display if value is greater than 0
+          return value > 0;
         },
       },
     },
-    cutout: "65%",
+    cutout: "70%", // Increased cutout to create more space
     radius: "90%",
     responsive: true,
     maintainAspectRatio: false,
     animation: {
       animateScale: true,
       animateRotate: true,
+    },
+    layout: {
+      padding: {
+        top: 20,
+        bottom: 20,
+        left: 20,
+        right: 20,
+      },
     },
   };
 
