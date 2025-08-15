@@ -2,7 +2,8 @@ import React from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import ROICalculatorPage from "./investment-calculators/ROI/ROICalculatorPage";
 import RentalYieldCalculatorPage from "./investment-calculators/RentalYield/RentalYieldCalculatorPage";
-import CapRateCalculatorPage from "./investment-calculators/CapRate/CapRateCalculatorPage"; // ✅ Import Cap Rate page
+import CapRateCalculatorPage from "./investment-calculators/CapRate/CapRateCalculatorPage";
+import BECalculatorPage from "./investment-calculators/BreakEven/BECalculatorPage"; // ✅ New import
 import "./App.css";
 
 function App() {
@@ -23,10 +24,13 @@ function App() {
           </Link>
           <span className="nav-divider">|</span>
           <Link to="/cap-rate" className="nav-link">
-            {" "}
-            {/* ✅ New link */}
             Cap Rate Calculator
           </Link>
+          <span className="nav-divider">|</span>
+          <Link to="/break-even" className="nav-link">
+            Break-Even Calculator
+          </Link>{" "}
+          {/* ✅ New link */}
         </nav>
 
         <main className="main-content">
@@ -47,7 +51,8 @@ function App() {
               path="/rental-yield"
               element={<RentalYieldCalculatorPage />}
             />
-            <Route path="/cap-rate" element={<CapRateCalculatorPage />} />{" "}
+            <Route path="/cap-rate" element={<CapRateCalculatorPage />} />
+            <Route path="/break-even" element={<BECalculatorPage />} />{" "}
             {/* ✅ New route */}
           </Routes>
         </main>
