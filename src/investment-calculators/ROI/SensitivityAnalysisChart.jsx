@@ -61,9 +61,16 @@ const SensitivityAnalysisChart = ({ data }) => {
       const cashFlowLikely = annualRent - expensesLikely;
       const cashFlowWorst = annualRent - expensesWorst;
 
-      bestCase.push(((cashFlowBest / totalInvestment) * 100).toFixed(2));
-      likelyCase.push(((cashFlowLikely / totalInvestment) * 100).toFixed(2));
-      worstCase.push(((cashFlowWorst / totalInvestment) * 100).toFixed(2));
+      // Keep numbers, not strings
+      bestCase.push(
+        Number(((cashFlowBest / totalInvestment) * 100).toFixed(2))
+      );
+      likelyCase.push(
+        Number(((cashFlowLikely / totalInvestment) * 100).toFixed(2))
+      );
+      worstCase.push(
+        Number(((cashFlowWorst / totalInvestment) * 100).toFixed(2))
+      );
     }
 
     return { bestCase, likelyCase, worstCase };
@@ -86,8 +93,8 @@ const SensitivityAnalysisChart = ({ data }) => {
         backgroundColor: "rgba(76, 175, 80, 0.05)",
         borderWidth: 2,
         tension: 0.1,
-        pointRadius: 0, // Hide points
-        pointHoverRadius: 0, // Hide hover points
+        pointRadius: 0,
+        pointHoverRadius: 6,
       },
       {
         label: "Likely Case ROI",
@@ -96,8 +103,8 @@ const SensitivityAnalysisChart = ({ data }) => {
         backgroundColor: "rgba(33, 150, 243, 0.05)",
         borderWidth: 2,
         tension: 0.1,
-        pointRadius: 0, // Hide points
-        pointHoverRadius: 0, // Hide hover points
+        pointRadius: 0,
+        pointHoverRadius: 6,
       },
       {
         label: "Worst Case ROI",
@@ -106,8 +113,8 @@ const SensitivityAnalysisChart = ({ data }) => {
         backgroundColor: "rgba(244, 67, 54, 0.05)",
         borderWidth: 2,
         tension: 0.1,
-        pointRadius: 0, // Hide points
-        pointHoverRadius: 0, // Hide hover points
+        pointRadius: 0,
+        pointHoverRadius: 6,
       },
     ],
   };
@@ -115,34 +122,36 @@ const SensitivityAnalysisChart = ({ data }) => {
   const options = {
     responsive: true,
     maintainAspectRatio: false,
+    interaction: {
+      mode: "nearest", // detect nearest point
+      axis: "x", // along x-axis
+      intersect: false, // allow hover even if not exactly on the line
+    },
     plugins: {
       legend: {
         position: "top",
         labels: {
           boxWidth: 12,
-          padding: 10, // Reduced from 20
+          padding: 10,
           usePointStyle: true,
-          font: {
-            size: 12, // Reduced label size
-          },
+          font: { size: 12 },
         },
       },
       title: {
         display: true,
         text: "ROI Sensitivity Analysis",
-        padding: { bottom: 10 }, // Reduced from 15
-        font: { size: 14 }, // Reduced from 16
+        padding: { bottom: 10 },
+        font: { size: 14 },
       },
       tooltip: {
         backgroundColor: "rgba(0,0,0,0.8)",
-        padding: 10, // Reduced from 12
-        bodySpacing: 6, // Reduced from 8
+        padding: 10,
+        bodySpacing: 6,
         callbacks: {
-          label: (context) => `${context.dataset.label}: ${context.parsed.y}%`,
+          label: (context) =>
+            `${context.dataset.label}: ${context.parsed.y.toFixed(2)}%`,
         },
-        bodyFont: {
-          size: 12, // Reduced tooltip font size
-        },
+        bodyFont: { size: 12 },
       },
     },
     scales: {
@@ -152,28 +161,19 @@ const SensitivityAnalysisChart = ({ data }) => {
         ticks: {
           callback: (value) => `${value}%`,
           padding: 5,
-          font: {
-            size: 11, // Reduced axis label size
-          },
+          font: { size: 11 },
         },
       },
       x: {
         grid: { display: false },
         ticks: {
           padding: 15,
-          font: {
-            size: 10, // Reduced axis label size
-          },
+          font: { size: 10 },
         },
       },
     },
     layout: {
-      padding: {
-        top: 0, // Reduced from 5
-        right: 5, // Reduced from 10
-        bottom: 0, // Reduced from 5
-        left: 5, // Reduced from 10
-      },
+      padding: { top: 0, right: 5, bottom: 0, left: 5 },
     },
   };
 
@@ -184,8 +184,8 @@ const SensitivityAnalysisChart = ({ data }) => {
         height: "100%",
         display: "flex",
         flexDirection: "column",
-        gap: "10px", // Reduced from 15px
-        padding: "10px", // Reduced from 15px
+        gap: "10px",
+        padding: "10px",
         backgroundColor: "white",
         borderRadius: "8px",
         boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
@@ -195,16 +195,16 @@ const SensitivityAnalysisChart = ({ data }) => {
         style={{
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
-          gap: "15px", // Reduced from 20px
-          padding: "0 5px", // Reduced from 10px
+          gap: "15px",
+          padding: "0 5px",
         }}
       >
         <div>
           <label
             style={{
               display: "block",
-              marginBottom: "5px", // Reduced from 8px
-              fontSize: "12px", // Reduced from 14px
+              marginBottom: "5px",
+              fontSize: "12px",
               color: "#555",
             }}
           >
@@ -228,8 +228,8 @@ const SensitivityAnalysisChart = ({ data }) => {
           <label
             style={{
               display: "block",
-              marginBottom: "5px", // Reduced from 8px
-              fontSize: "12px", // Reduced from 14px
+              marginBottom: "5px",
+              fontSize: "12px",
               color: "#555",
             }}
           >
@@ -255,7 +255,7 @@ const SensitivityAnalysisChart = ({ data }) => {
           flex: "1",
           minHeight: "300px",
           position: "relative",
-          marginTop: "-5px", // Added to move chart up slightly
+          marginTop: "-5px",
         }}
       >
         <Line data={chartData} options={options} />
