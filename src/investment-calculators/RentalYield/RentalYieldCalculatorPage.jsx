@@ -13,7 +13,7 @@ import {
   calculateMortgagePayment,
   sumValues,
   calculateTotalCashInvested,
-} from "../../utils/rentalFormulas";
+} from "../../Utils/rentalFormulas";
 import "../../styles/RentalYieldCalculator.css";
 
 const RentalYieldCalculatorPage = () => {

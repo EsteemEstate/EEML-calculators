@@ -274,12 +274,122 @@ body {
   border-radius: 12px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   border: 1px solid var(--border);
+  margin-bottom: 2rem;
 }
 
 .chart-container {
   margin-top: 0.5rem;
   height: 350px;
   position: relative;
+}
+
+.chart-title {
+  color: var(--primary);
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  text-align: center;
+  font-weight: 600;
+}
+
+/* Sensitivity Analysis Chart Container */
+.sensitivity-analysis-chart {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  border: 1px solid #eaeaea;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Chart Title */
+.sensitivity-analysis-chart h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #334455;
+  margin: 0;
+}
+
+/* Contain the chart fully inside its box */
+.sensitivity-analysis-chart .chart-container {
+  height: 350px; /* matches your existing style */
+  width: 100%;
+  max-width: 100%;
+  position: relative;
+  overflow: hidden; /* prevent spilling */
+  padding: 0.5rem;
+  box-sizing: border-box;
+}
+
+/* Adjust canvas sizing inside */
+.sensitivity-analysis-chart canvas {
+  display: block;
+  max-width: 100% !important;
+  height: auto !important;
+}
+
+/* Sliders Section */
+.sensitivity-sliders {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.sensitivity-sliders label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #555;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sensitivity-sliders input[type="range"] {
+  width: 100%;
+  accent-color: #4bc0c0; /* matches chart's teal line */
+  cursor: pointer;
+}
+
+/* Table Styling */
+.sensitivity-analysis-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.sensitivity-analysis-table th,
+.sensitivity-analysis-table td {
+  border: 1px solid #ddd;
+  padding: 8px 12px;
+  text-align: center;
+}
+
+.sensitivity-analysis-table th {
+  background: #f9f9f9;
+  font-weight: 600;
+}
+
+.sensitivity-analysis-table tr:nth-child(even) {
+  background: #fdfdfd;
+}
+
+.sensitivity-analysis-table tr:hover {
+  background: #f5faff;
+}
+
+/* Existing chart grid styles remain unchanged */
+.chart-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.chart-wrapper {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
 /* Empty State */
@@ -307,197 +417,6 @@ body {
 .empty-state p {
   color: var(--text-light);
   margin: 0;
-}
-
-/* Responsive Layout */
-@media (max-width: 900px) {
-  .calculator-grid {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
-
-  .form-container {
-    position: static;
-  }
-}
-
-@media (max-width: 600px) {
-  .roi-calculator-page {
-    padding: 0 1rem;
-    margin: 1rem auto;
-  }
-
-  .calculator-header h1 {
-    font-size: 1.8rem;
-  }
-
-  .input-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .metrics-cards {
-    grid-template-columns: 1fr;
-  }
-
-  .result-row {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.25rem;
-    padding: 1rem;
-  }
-}
-
-/* Mobile-First Breakpoints */
-@media (max-width: 768px) {
-  /* Base Layout */
-  .roi-calculator-page {
-    padding: 0 1rem;
-    margin: 1rem auto;
-  }
-
-  /* Header Adjustments */
-  .calculator-header h1 {
-    font-size: 1.8rem;
-    margin-bottom: 0.25rem;
-  }
-
-  .calculator-header .subtitle {
-    font-size: 1rem;
-  }
-
-  /* Stack Form and Results */
-  .calculator-grid {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
-
-  /* Form Adjustments */
-  .form-container {
-    padding: 1.25rem;
-  }
-
-  .form-section {
-    padding: 1rem;
-  }
-
-  .input-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .submit-button {
-    max-width: 100%;
-    padding: 1rem;
-  }
-
-  /* Results Area */
-  .metrics-cards {
-    grid-template-columns: 1fr;
-  }
-
-  .result-row {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.25rem;
-    padding: 1rem;
-  }
-
-  /* Chart Adjustments */
-  .chart-wrapper {
-    padding: 1rem;
-  }
-
-  .chart-container {
-    height: 300px;
-  }
-
-  /* Investment Health Message */
-  .investment-health {
-    padding: 1rem;
-  }
-}
-
-/* Mobile-First Breakpoints */
-@media (max-width: 768px) {
-  /* Base Layout */
-  .roi-calculator-page {
-    padding: 0 1rem;
-    margin: 1rem auto;
-  }
-
-  /* Header Adjustments */
-  .calculator-header h1 {
-    font-size: 1.8rem;
-    margin-bottom: 0.25rem;
-  }
-
-  .calculator-header .subtitle {
-    font-size: 1rem;
-  }
-
-  /* Stack Form and Results */
-  .calculator-grid {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
-
-  /* Form Adjustments */
-  .form-container {
-    padding: 1.25rem;
-  }
-
-  .form-section {
-    padding: 1rem;
-  }
-
-  .input-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .submit-button {
-    max-width: 100%;
-    padding: 1rem;
-  }
-
-  /* Results Area */
-  .metrics-cards {
-    grid-template-columns: 1fr;
-  }
-
-  .result-row {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.25rem;
-    padding: 1rem;
-  }
-
-  /* Chart Adjustments */
-  .chart-wrapper {
-    padding: 1rem;
-  }
-
-  .chart-container {
-    height: 300px;
-  }
-
-  /* Investment Health Message */
-  .investment-health {
-    padding: 1rem;
-  }
-}
-
-/* Small Mobile Devices (<= 375px) */
-@media (max-width: 375px) {
-  .calculator-header h1 {
-    font-size: 1.6rem;
-  }
-
-  .metric-card {
-    padding: 1rem;
-  }
-
-  .metric-value {
-    font-size: 1.3rem;
-  }
 }
 
 /* Tooltip Styles */
@@ -554,51 +473,216 @@ body {
   opacity: 1;
 }
 
-/* Mobile adaptation */
+/* Responsive Layout */
+@media (max-width: 900px) {
+  .calculator-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .form-container {
+    position: static;
+  }
+}
+
 @media (max-width: 768px) {
+  .roi-calculator-page {
+    padding: 0 1rem;
+    margin: 1rem auto;
+  }
+
+  .calculator-header h1 {
+    font-size: 1.8rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .calculator-header .subtitle {
+    font-size: 1rem;
+  }
+
+  .calculator-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .form-container {
+    padding: 1.25rem;
+  }
+
+  .form-section {
+    padding: 1rem;
+  }
+
+  .input-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .submit-button {
+    max-width: 100%;
+    padding: 1rem;
+  }
+
+  .metrics-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .result-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+    padding: 1rem;
+  }
+
+  .chart-wrapper {
+    padding: 1rem;
+  }
+
+  .chart-container {
+    height: 500px;
+  }
+
+  .investment-health {
+    padding: 1rem;
+  }
+
   .tooltip .tooltip-text {
     width: 160px;
     font-size: 0.8rem;
   }
 }
 
-/* Add to your ROICalculator.css */
+@media (max-width: 600px) {
+  .input-grid {
+    grid-template-columns: 1fr;
+  }
 
-.chart-wrapper {
-  background: white;
-  padding: 1.5rem;
+  .metrics-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .result-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 375px) {
+  .calculator-header h1 {
+    font-size: 1.6rem;
+  }
+
+  .metric-card {
+    padding: 1rem;
+  }
+
+  .metric-value {
+    font-size: 1.3rem;
+  }
+}
+
+/* Add to your existing ROICalculator.css */
+
+/* Sensitivity Analysis Specific Styles */
+.sensitivity-analysis-chart {
+  background: var(--card-bg);
   border-radius: 12px;
+  padding: 1.5rem;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   border: 1px solid var(--border);
+  margin-bottom: 2rem;
+}
+
+.sensitivity-sliders {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
   margin-bottom: 1.5rem;
 }
 
+.sensitivity-sliders label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  color: var(--text-light);
+}
+
+.sensitivity-sliders input[type="range"] {
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--border);
+  outline: none;
+  -webkit-appearance: none;
+}
+
+.sensitivity-sliders input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--primary);
+  cursor: pointer;
+}
+
+.value-display {
+  font-weight: 600;
+  color: var(--primary);
+  margin-left: 0.5rem;
+}
+
+/* Chart Container Improvements */
 .chart-container {
-  margin-top: 0.5rem;
   height: 350px;
+  margin: 1rem 0;
   position: relative;
 }
 
-/* For the chart title */
-.chart-title {
-  color: var(--primary);
-  font-size: 1.2rem;
-  margin-bottom: 1rem;
-  text-align: center;
-  font-weight: 600;
+/* Table Styling */
+.sensitivity-analysis-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1.5rem;
+  font-size: 0.95rem;
 }
 
-/* Responsive adjustments */
+.sensitivity-analysis-table th,
+.sensitivity-analysis-table td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.sensitivity-analysis-table th {
+  background: var(--card-bg);
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.sensitivity-analysis-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* Scenario Color Coding */
+.best-case {
+  color: var(--positive);
+}
+.likely-case {
+  color: var(--text);
+}
+.worst-case {
+  color: var(--negative);
+}
+
+/* Responsive Adjustments */
 @media (max-width: 768px) {
-  .chart-wrapper {
-    padding: 1rem;
+  .sensitivity-sliders {
+    grid-template-columns: 1fr;
   }
 
   .chart-container {
     height: 300px;
   }
-}
-/* Add margin below each chart wrapper */
-.chart-wrapper {
-  margin-bottom: 4rem; /* Adjust this value as needed */
 }

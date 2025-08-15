@@ -228,13 +228,28 @@ function ROIChart({ data }) {
   return (
     <div
       style={{
-        marginTop: "2rem",
         position: "relative",
-        height: "400px",
+        height: "380px", // Slightly reduced height
         width: "100%",
+        marginTop: "-1rem", // Reduced top margin
+        marginBottom: "-1rem", // Negative margin to pull up
+        paddingTop: "0.5rem", // Reduced padding
       }}
     >
-      <Line data={chartData} options={options} />
+      <Line
+        data={chartData}
+        options={{
+          ...options,
+          layout: {
+            padding: {
+              top: 10, // Reduced chart internal padding
+              bottom: 10,
+              left: 10,
+              right: 10,
+            },
+          },
+        }}
+      />
     </div>
   );
 }

@@ -2,6 +2,7 @@ import React from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import ROICalculatorPage from "./investment-calculators/ROI/ROICalculatorPage";
 import RentalYieldCalculatorPage from "./investment-calculators/RentalYield/RentalYieldCalculatorPage";
+import CapRateCalculatorPage from "./investment-calculators/CapRate/CapRateCalculatorPage"; // ✅ Import Cap Rate page
 import "./App.css";
 
 function App() {
@@ -19,6 +20,12 @@ function App() {
           <span className="nav-divider">|</span>
           <Link to="/rental-yield" className="nav-link">
             Rental Yield Calculator
+          </Link>
+          <span className="nav-divider">|</span>
+          <Link to="/cap-rate" className="nav-link">
+            {" "}
+            {/* ✅ New link */}
+            Cap Rate Calculator
           </Link>
         </nav>
 
@@ -40,12 +47,14 @@ function App() {
               path="/rental-yield"
               element={<RentalYieldCalculatorPage />}
             />
+            <Route path="/cap-rate" element={<CapRateCalculatorPage />} />{" "}
+            {/* ✅ New route */}
           </Routes>
         </main>
 
         <footer>
           <p className="footer-text">
-            © {new Date().getFullYear()} Esteem Estate Managemnet LTD
+            © {new Date().getFullYear()} Esteem Estate Management LTD
           </p>
         </footer>
       </div>

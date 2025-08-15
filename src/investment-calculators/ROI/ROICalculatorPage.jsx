@@ -3,6 +3,7 @@ import ROIForm from "./ROIForm";
 import ROIResults from "./ROIResults";
 import ROIChart from "./ROIChart";
 import ROIPieChart from "./ROIPieChart";
+import SensitivityAnalysisChart from "./SensitivityAnalysisChart"; // ← NEW component
 import "../../styles/ROICalculator.css";
 
 const ROICalculatorPage = () => {
@@ -24,7 +25,7 @@ const ROICalculatorPage = () => {
           <p>
             ROI (Return on Investment) measures the profitability of your
             investment, expressed as a percentage of the total investment cost.
-            It’s a key metric for evaluating whether a property is worth
+            It's a key metric for evaluating whether a property is worth
             pursuing.
           </p>
           <h4>Formula:</h4>
@@ -52,13 +53,20 @@ const ROICalculatorPage = () => {
           {results ? (
             <>
               <ROIResults data={results} />
-              <div className="chart-grid">
-                <div className="chart-wrapper">
-                  <ROIChart data={results} />
+
+              {/* First Row - Sensitivity Analysis + Pie Chart */}
+              <div className="chart-row">
+                <div className="chart-wrapper stacked-bar-container">
+                  <SensitivityAnalysisChart data={results} /> {/* ← REPLACED */}
                 </div>
                 <div className="chart-wrapper">
                   <ROIPieChart data={results} />
                 </div>
+              </div>
+
+              {/* Second Row - Full Width ROI Line Chart */}
+              <div className="chart-wrapper full-width">
+                <ROIChart data={results} />
               </div>
             </>
           ) : (

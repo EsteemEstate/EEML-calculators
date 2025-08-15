@@ -15,7 +15,7 @@ function ROIPieChart({ data }) {
     hoaFees,
   } = data;
 
-  // Filter out zero values to avoid showing empty segments
+  // Convert all values to numbers and filter zeros
   const labels = [
     "Taxes",
     "Insurance",
@@ -25,15 +25,15 @@ function ROIPieChart({ data }) {
     "HOA Fees",
   ];
   const values = [
-    taxes,
-    insurance,
-    maintenance,
-    propertyManagement,
-    utilities,
-    hoaFees,
+    Number(taxes || 0),
+    Number(insurance || 0),
+    Number(maintenance || 0),
+    Number(propertyManagement || 0),
+    Number(utilities || 0),
+    Number(hoaFees || 0), // Ensure HOA fees is included
   ];
 
-  // Filter out zero values
+  // Filter out zero values but keep very small values
   const filteredLabels = labels.filter((_, index) => values[index] > 0);
   const filteredValues = values.filter((value) => value > 0);
 
@@ -43,16 +43,16 @@ function ROIPieChart({ data }) {
       {
         data: filteredValues,
         backgroundColor: [
-          "#446688", // primary
-          "#6699cc", // secondary
-          "#ff9966", // accent
+          "#446688",
+          "#6699cc",
+          "#ff9966",
           "#4BC0C0",
           "#9966FF",
           "#FF9F40",
         ],
-        borderColor: "#f0f4f8", // bg-color
-        borderWidth: 1, // Reduced border width
-        hoverBorderWidth: 2, // Reduced hover border width
+        borderColor: "#f0f4f8",
+        borderWidth: 1,
+        hoverBorderWidth: 2,
         hoverBorderColor: "#fff",
       },
     ],
@@ -63,94 +63,81 @@ function ROIPieChart({ data }) {
       title: {
         display: true,
         text: "Operating Expense Breakdown",
-        color: "#334455", // text
+        color: "#334455",
         font: {
-          family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
           size: 16,
           weight: "600",
         },
         padding: {
-          top: 10,
-          bottom: 20,
+          top: 5,
+          bottom: 10,
         },
       },
       legend: {
         position: "bottom",
         labels: {
-          color: "#556677", // text-light
+          color: "#556677",
           font: {
-            family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
             size: 12,
             weight: "500",
           },
-          padding: 20,
+          padding: 10,
           usePointStyle: true,
           pointStyle: "circle",
+          boxWidth: 10,
         },
       },
       tooltip: {
-        backgroundColor: "#446688", // primary
+        backgroundColor: "#446688",
         titleColor: "#fff",
         bodyColor: "#fff",
-        titleFont: {
-          size: 14,
-          weight: "600",
-        },
-        bodyFont: {
-          size: 12,
-        },
-        padding: 12,
-        cornerRadius: 8,
-        displayColors: true,
-        usePointStyle: true,
+        padding: 8,
       },
       datalabels: {
         formatter: (value, context) => {
           const dataset = context.chart.data.datasets[0].data;
           const total = dataset.reduce((acc, val) => acc + val, 0);
           const percentage = ((value / total) * 100).toFixed(1);
-          return percentage >= 10 ? `${percentage}%` : ""; // Only show labels >=10%
+          return `${percentage}%`; // Always show percentage regardless of size
         },
         color: "#fff",
         font: {
-          family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
           weight: "600",
-          size: 10, // Reduced font size
+          size: 11, // Slightly larger font
         },
-        textAlign: "center",
-        anchor: "center",
-        offset: 5, // Added offset to push labels outward
-        clamp: true,
-        clip: false,
+        offset: 6, // Increased offset for better visibility
         display: (context) => {
           const value = context.dataset.data[context.dataIndex];
           return value > 0;
         },
       },
     },
-    cutout: "70%", // Increased cutout to create more space
-    radius: "90%",
+    cutout: "65%",
+    radius: "85%",
     responsive: true,
     maintainAspectRatio: false,
-    animation: {
-      animateScale: true,
-      animateRotate: true,
-    },
     layout: {
       padding: {
-        top: 20,
-        bottom: 20,
-        left: 20,
-        right: 20,
+        top: 10,
+        bottom: 10,
+        left: 10,
+        right: 10,
       },
     },
   };
 
   return (
-    <div className="chart-wrapper">
-      <div className="chart-container" style={{ height: "400px" }}>
-        <Doughnut data={chartData} options={options} />
-      </div>
+    // In ROIPieChart.js
+    <div
+      style={{
+        position: "relative",
+        height: "360px",
+        width: "100%",
+        marginTop: "30px", // Increased from 0.5rem
+        marginBottom: "-0.5rem",
+      }}
+    >
+      <Doughnut data={chartData} options={options} />
     </div>
   );
 }
