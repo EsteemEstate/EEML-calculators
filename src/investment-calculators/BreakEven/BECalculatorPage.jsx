@@ -1,10 +1,29 @@
 import React, { useState } from "react";
 import BreakEvenForm from "./BreakEvenForm";
 import BreakEvenResults from "./BreakEvenResults";
+import BreakEvenChart from "./BreakEvenChart";
+import BreakEvenOccupancy from "./BreakEvenOccupancy"; // 2️⃣ Occupancy vs Cash Flow
+import BreakEvenBarChart from "./BreakEvenBarChart"; // 3️⃣ Revenue vs Cost Stack
 import "../../styles/BreakEvenCalculator.css";
 
 const BreakEvenCalculatorPage = () => {
   const [results, setResults] = useState(null);
+
+  const handleResults = (calculatedData) => {
+    // Include all fields needed for charts
+    const fullResults = {
+      ...calculatedData,
+      monthlyRent: calculatedData.monthlyRent || 2000,
+      occupancyRate: calculatedData.occupancyRate || 75,
+      otherIncome: calculatedData.otherIncome || 0,
+      propertyTax: calculatedData.propertyTax || 300,
+      insurance: calculatedData.insurance || 100,
+      maintenance: calculatedData.maintenance || 150,
+      managementFee: calculatedData.propertyManagement || 200,
+      utilities: calculatedData.utilities || 200,
+    };
+    setResults(fullResults);
+  };
 
   return (
     <div className="breakeven-calculator-wrapper">
@@ -49,13 +68,33 @@ const BreakEvenCalculatorPage = () => {
 
         {/* Form Column */}
         <div className="form-column">
-          <BreakEvenForm setResults={setResults} />
+          <BreakEvenForm setResults={handleResults} />
         </div>
 
         {/* Results Column */}
         <div className="results-column">
           {results ? (
-            <BreakEvenResults data={results} />
+            <>
+              <BreakEvenResults data={results} />
+
+              {/* Charts */}
+              <div className="charts-wrapper">
+                <div className="chart-container">
+                  <h3>Break-Even Rent Curve</h3>
+                  <BreakEvenChart data={results} />
+                </div>
+
+                <div className="chart-container">
+                  <h3>Occupancy vs Cash Flow</h3>
+                  <BreakEvenOccupancy data={results} />
+                </div>
+
+                <div className="chart-container">
+                  <h3>Revenue vs Cost Stack</h3>
+                  <BreakEvenBarChart data={results} />
+                </div>
+              </div>
+            </>
           ) : (
             <div className="empty-state">
               <div className="empty-icon">📊</div>

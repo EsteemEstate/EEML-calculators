@@ -224,3 +224,47 @@
   color: #333; /* Dark Text */
   cursor: pointer;
 }
+
+.charts-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.chart-container {
+  background-color: #fff;
+  padding: 1rem 1.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.chart-container:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+.chart-container h3 {
+  margin-bottom: 0.75rem;
+  font-size: 1.3rem;
+  color: #1f2937;
+  text-align: center;
+  font-weight: 600;
+}
+
+.chart-container canvas {
+  max-width: 100%;
+  height: 360px;
+}
+
+/* Optional: distinct background shades for each chart card */
+#break-even-rent-chart {
+  border-left: 5px solid #3b82f6; /* blue */
+}
+#occupancy-cashflow-chart {
+  border-left: 5px solid #10b981; /* green */
+}
+#revenue-cost-stack-chart {
+  border-left: 5px solid #f59e0b; /* amber */
+}
