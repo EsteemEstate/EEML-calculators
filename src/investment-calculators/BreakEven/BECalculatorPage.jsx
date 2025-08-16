@@ -1,16 +1,13 @@
 import React, { useState } from "react";
 import BreakEvenForm from "./BreakEvenForm";
 import BreakEvenResults from "./BreakEvenResults";
-import BreakEvenChart from "./BreakEvenChart";
-import BreakEvenOccupancy from "./BreakEvenOccupancy"; // 2️⃣ Occupancy vs Cash Flow
-import BreakEvenBarChart from "./BreakEvenBarChart"; // 3️⃣ Revenue vs Cost Stack
+import RevenueCostStack from "./RevenueCostStack";
 import "../../styles/BreakEvenCalculator.css";
 
 const BreakEvenCalculatorPage = () => {
   const [results, setResults] = useState(null);
 
   const handleResults = (calculatedData) => {
-    // Include all fields needed for charts
     const fullResults = {
       ...calculatedData,
       monthlyRent: calculatedData.monthlyRent || 2000,
@@ -77,21 +74,11 @@ const BreakEvenCalculatorPage = () => {
             <>
               <BreakEvenResults data={results} />
 
-              {/* Charts */}
-              <div className="charts-wrapper">
-                <div className="chart-container">
-                  <h3>Break-Even Rent Curve</h3>
-                  <BreakEvenChart data={results} />
-                </div>
-
-                <div className="chart-container">
-                  <h3>Occupancy vs Cash Flow</h3>
-                  <BreakEvenOccupancy data={results} />
-                </div>
-
+              {/* Charts Section - Only Revenue vs Cost Stack remains */}
+              <div className="charts-section">
                 <div className="chart-container">
                   <h3>Revenue vs Cost Stack</h3>
-                  <BreakEvenBarChart data={results} />
+                  <RevenueCostStack formData={results} />
                 </div>
               </div>
             </>
