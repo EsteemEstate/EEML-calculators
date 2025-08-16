@@ -1,26 +1,25 @@
 import React from "react";
 
 function BreakEvenResults({ data }) {
-  if (!data || !data.breakEvenUnits)
+  if (!data || data.noi === undefined || data.noi === null) {
     return (
-      <div className="results-empty">
+      <div className="break-even-empty">
         No data to display. Please submit the form.
       </div>
     );
+  }
 
   const {
-    breakEvenUnits,
+    noi,
+    cashFlow,
     breakEvenRevenue,
-    monthlyCashFlow,
-    NOI,
-    DSCR,
-    operatingExpenseRatio,
-    paybackMonths,
+    breakEvenRent,
+    totalOperatingExpenses,
+    mortgagePayment,
+    dscr,
+    capRate,
+    cocROI,
   } = data;
-
-  // Formatting helpers
-  const formatPercent = (value) =>
-    typeof value === "number" ? `${value.toFixed(2)}%` : "N/A";
 
   const formatCurrency = (value) =>
     typeof value === "number"
@@ -32,83 +31,107 @@ function BreakEvenResults({ data }) {
         })
       : "N/A";
 
-  // Determine if break-even is achieved
-  const isProfitable = monthlyCashFlow >= 0;
-  const cfColor = isProfitable ? "positive-value" : "negative-value";
+  const formatPercent = (value) =>
+    typeof value === "number" ? `${value.toFixed(2)}%` : "N/A";
+
+  const isProfitable = cashFlow > 0;
 
   return (
-    <div className="results-container">
-      <h2 className="results-header">Break-Even Analysis Summary</h2>
+    <div className="break-even-results">
+      <h2 className="results-header">Investment Analysis Summary</h2>
 
       {/* Key Metrics Cards */}
-      <div className="metrics-cards">
-        <div className={`metric-card ${cfColor}`}>
+      <div className="be-metrics-cards">
+        <div
+          className={`be-metric-card ${
+            isProfitable ? "positive-value" : "negative-value"
+          }`}
+        >
           <div className="metric-content">
-            <span className="metric-label">Break-Even Units</span>
-            <span className="metric-value">{breakEvenUnits}</span>
+            <span className="be-metric-label">Net Operating Income</span>
+            <span className="be-metric-value">{formatCurrency(noi)}</span>
           </div>
         </div>
 
-        <div className={`metric-card ${cfColor}`}>
+        <div
+          className={`be-metric-card ${
+            isProfitable ? "positive-value" : "negative-value"
+          }`}
+        >
           <div className="metric-content">
-            <span className="metric-label">Break-Even Revenue</span>
-            <span className="metric-value">
-              {formatCurrency(breakEvenRevenue)}
-            </span>
+            <span className="be-metric-label">Monthly Cash Flow</span>
+            <span className="be-metric-value">{formatCurrency(cashFlow)}</span>
+          </div>
+        </div>
+
+        <div
+          className={`be-metric-card ${
+            isProfitable ? "positive-value" : "negative-value"
+          }`}
+        >
+          <div className="metric-content">
+            <span className="be-metric-label">DSCR</span>
+            <span className="be-metric-value">{dscr.toFixed(2)}</span>
           </div>
         </div>
       </div>
 
-      {/* Detailed Results Grid */}
-      <div className="detailed-results">
-        <div className="result-row">
-          <span className="result-label">Monthly Cash Flow:</span>
-          <span className="result-value">
-            {formatCurrency(monthlyCashFlow)}
+      {/* Detailed Results */}
+      <div className="be-detailed-results">
+        <div className="be-result-row">
+          <span className="be-result-label">Break-Even Revenue:</span>
+          <span className="be-result-value">
+            {formatCurrency(breakEvenRevenue)}
           </span>
         </div>
-
-        <div className="result-row">
-          <span className="result-label">Net Operating Income (NOI):</span>
-          <span className="result-value">{formatCurrency(NOI)}</span>
-        </div>
-
-        <div className="result-row">
-          <span className="result-label">
-            Debt Service Coverage Ratio (DSCR):
-          </span>
-          <span className="result-value">{formatPercent(DSCR)}</span>
-        </div>
-
-        <div className="result-row">
-          <span className="result-label">Operating Expense Ratio:</span>
-          <span className="result-value">
-            {formatPercent(operatingExpenseRatio)}
+        <div className="be-result-row">
+          <span className="be-result-label">Required Rent:</span>
+          <span className="be-result-value">
+            {formatCurrency(breakEvenRent)}
           </span>
         </div>
-
-        <div className="result-row">
-          <span className="result-label">Payback Period (Months):</span>
-          <span className="result-value">{paybackMonths}</span>
+        <div className="be-result-row">
+          <span className="be-result-label">Total Expenses:</span>
+          <span className="be-result-value">
+            {formatCurrency(
+              totalOperatingExpenses?.total || totalOperatingExpenses
+            )}
+          </span>
+        </div>
+        <div className="be-result-row">
+          <span className="be-result-label">Mortgage Payment:</span>
+          <span className="be-result-value">
+            {formatCurrency(mortgagePayment?.regularPayment || mortgagePayment)}
+          </span>
         </div>
       </div>
 
-      {/* Break-Even Health */}
+      {/* ROI Metrics */}
+      <div className="be-detailed-results">
+        <div className="be-result-row">
+          <span className="be-result-label">Cap Rate:</span>
+          <span className="be-result-value">
+            {formatPercent(capRate * 100)}
+          </span>
+        </div>
+        <div className="be-result-row">
+          <span className="be-result-label">Cash-on-Cash ROI:</span>
+          <span className="be-result-value">{formatPercent(cocROI * 100)}</span>
+        </div>
+      </div>
+
+      {/* Investment Health */}
       <div
-        className={`investment-health ${
+        className={`break-even-health ${
           isProfitable ? "positive" : "negative"
         }`}
       >
-        <h3>Break-Even Health</h3>
+        <h3>Investment Health</h3>
         {isProfitable ? (
-          <p>
-            Your property reaches break-even at the current revenue and
-            occupancy assumptions.
-          </p>
+          <p>This property is profitable based on current inputs.</p>
         ) : (
           <p>
-            Warning: Break-even not yet achieved. Consider adjusting rent,
-            occupancy, or expenses.
+            Warning: The property is not currently profitable with these inputs.
           </p>
         )}
       </div>

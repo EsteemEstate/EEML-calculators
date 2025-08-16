@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import BreakEvenForm from "./BreakEvenForm";
 import BreakEvenResults from "./BreakEvenResults";
+import "../../styles/BreakEvenCalculator.css";
 
 const BreakEvenCalculatorPage = () => {
   const [results, setResults] = useState(null);
@@ -21,8 +22,8 @@ const BreakEvenCalculatorPage = () => {
           <h2>What is Break-Even Point?</h2>
           <p>
             The break-even point is the level of sales at which your total
-            revenue equals your total costs — meaning you’re not making a profit
-            but you’re not losing money either.
+            revenue equals your total costs — meaning you're not making a profit
+            but you're not losing money either.
           </p>
           <h4>Formula:</h4>
           <p>
@@ -54,24 +55,7 @@ const BreakEvenCalculatorPage = () => {
         {/* Results Column */}
         <div className="results-column">
           {results ? (
-            <>
-              <BreakEvenResults data={results} />
-
-              {/* First Row - Sensitivity Analysis + Pie Chart */}
-              <div className="chart-row">
-                <div className="chart-wrapper stacked-bar-container">
-                  <BreakEvenSensitivityChart data={results} />
-                </div>
-                <div className="chart-wrapper">
-                  <BreakEvenPieChart data={results} />
-                </div>
-              </div>
-
-              {/* Second Row - Full Width Chart */}
-              <div className="chart-wrapper full-width">
-                <BreakEvenChart data={results} />
-              </div>
-            </>
+            <BreakEvenResults data={results} />
           ) : (
             <div className="empty-state">
               <div className="empty-icon">📊</div>

@@ -1,99 +1,226 @@
-/* BreakEvenResults.css */
+/* src/styles/BreakEvenResults.css */
 
-.results-container {
+/* Container */
+.break-even-results {
   padding: 20px;
-  background-color: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
-}
-
-.results-header {
-  font-size: 1.8rem;
-  margin-bottom: 15px;
-  color: #1f2937; /* Dark gray */
-}
-
-.metrics-cards {
-  display: flex;
-  gap: 15px;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-}
-
-.metric-card {
-  flex: 1 1 150px;
-  background-color: #f3f4f6;
+  border: 1px solid var(--border);
   border-radius: 10px;
+  background: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  animation: fadeIn 0.4s ease-out;
+}
+
+.break-even-results h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  color: var(--text);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.5rem;
+}
+
+/* Metric Cards */
+.be-metrics-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.be-metric-card {
+  flex: 1;
+  min-width: 180px;
   padding: 15px;
+  border-radius: 8px;
+  background: var(--card-bg);
   text-align: center;
-  transition: background-color 0.2s;
+  border: 1px solid var(--border);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.metric-card.positive-value {
-  background-color: #d1fae5; /* light green */
+.be-metric-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
 }
 
-.metric-card.negative-value {
-  background-color: #fee2e2; /* light red */
-}
-
-.metric-label {
-  font-size: 0.9rem;
-  color: #6b7280; /* gray-500 */
+.be-metric-label {
   display: block;
-  margin-bottom: 5px;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  color: var(--text-light);
 }
 
-.metric-value {
-  font-size: 1.4rem;
-  font-weight: bold;
-  color: #111827; /* gray-900 */
+.be-metric-value {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--primary);
 }
 
-.detailed-results {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px 20px;
-  margin-bottom: 20px;
+/* Detailed Grid */
+.be-detailed-results {
+  margin-top: 1rem;
 }
 
-.result-row {
+.be-result-row {
   display: flex;
   justify-content: space-between;
-  padding: 8px 0;
-  border-bottom: 1px solid #e5e7eb;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--border);
 }
 
-.result-label {
+.be-result-label {
   font-weight: 500;
-  color: #374151; /* gray-700 */
+  color: var(--text);
 }
 
-.result-value {
+.be-result-value {
   font-weight: 600;
-  color: #111827; /* gray-900 */
+  color: var(--primary);
 }
 
-.investment-health {
-  padding: 15px;
-  border-radius: 10px;
+/* Health Section */
+.break-even-health {
+  margin-top: 2rem;
+  padding: 1rem;
+  border-radius: 8px;
   font-size: 0.95rem;
 }
 
-.investment-health.positive {
-  background-color: #ecfdf5; /* light green */
-  color: #065f46; /* green-800 */
+.break-even-health.positive {
+  background-color: #eafaf1;
+  border: 1px solid #c8e6c9;
+  color: var(--success);
 }
 
-.investment-health.negative {
-  background-color: #fef2f2; /* light red */
-  color: #991b1b; /* red-800 */
+.break-even-health.negative {
+  background-color: #fff0f0;
+  border: 1px solid #ffcdd2;
+  color: #c0392b;
 }
 
-.results-empty {
-  padding: 20px;
+/* Empty State */
+.break-even-empty {
   text-align: center;
-  color: #6b7280;
+  padding: 2rem;
+  background: var(--card-bg);
+  border-radius: 8px;
+  border: 1px dashed var(--border);
+  color: var(--text-light);
   font-style: italic;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .be-metrics-cards {
+    flex-direction: column;
+  }
+
+  .be-metric-card {
+    width: 100%;
+  }
+}
+
+/* Buttons */
+
+.be-btn {
+  background: #007bff; /* Primary Blue */
+  color: white;
+  font-weight: 600;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.25s ease, transform 0.15s ease;
+}
+
+.be-btn:hover {
+  background: #0056b3; /* Darker Blue */
+  transform: translateY(-2px);
+}
+
+.be-btn:active {
+  transform: translateY(0);
+}
+
+.be-btn.secondary {
+  background: #e0e0e0; /* Neutral Gray */
+  color: #333; /* Dark Text */
+}
+
+.be-btn.secondary:hover {
+  background: #d5d8dc;
+}
+
+.be-btn-spacing {
+  background: #3498db; /* primary color from Cap Rate CSS */
+  color: white;
+  font-weight: 600;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.25s ease, transform 0.15s ease;
+  margin-top: 1rem !important; /* added spacing */
+
+  /* Optional: display inline-block for consistent spacing */
+  display: inline-block;
+}
+
+.be-btn-spacing:hover {
+  background: #2980b9; /* darker shade for hover */
+  transform: translateY(-2px);
+}
+
+.be-btn-spacing:active {
+  transform: translateY(0);
+}
+
+/* Secondary variant */
+.be-btn-spacing.secondary {
+  background: #e1e1e1; /* light gray */
+  color: #2c3e50; /* dark text */
+}
+
+.be-btn-spacing.secondary:hover {
+  background: #d5d8dc; /* slightly darker gray on hover */
+}
+
+/* Checkboxes */
+.be-checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.5rem 0;
+}
+
+.be-checkbox {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #ccc; /* Light Gray Border */
+  border-radius: 4px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.be-checkbox:checked {
+  background: #007bff; /* Blue Check */
+  border-color: #007bff;
+}
+
+.be-checkbox:checked::after {
+  content: "✔";
+  position: absolute;
+  top: -2px;
+  left: 2px;
+  font-size: 14px;
+  color: white;
+}
+
+/* Checkbox Label */
+.be-checkbox-label {
+  font-size: 0.95rem;
+  color: #333; /* Dark Text */
+  cursor: pointer;
 }

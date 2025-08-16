@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { calculateBreakEven } from "../../Utils/BEformulas";
+import "../../styles/BreakEvenCalculator.css";
 
 const SectionTitleWithTooltip = ({ title, description }) => (
   <div className="section-title-container">
@@ -10,95 +11,98 @@ const SectionTitleWithTooltip = ({ title, description }) => (
   </div>
 );
 
+// Initial placeholder data object
+const initialPlaceholderData = {
+  // 1. Property & Market
+  propertyType: "SFH",
+  purchasePrice: 300000,
+  marketValue: 320000,
+  address: "123 Main St",
+  region: "Caribbean",
+  currency: "TTD",
+  beds: 3,
+  baths: 2,
+  sizeSqFt: 1500,
+  hoaAllowed: true,
+
+  // 2. Acquisition & Upfront Costs
+  downPayment: 60000,
+  closingCosts: 5000,
+  closingCostsBreakdown: { legal: 2000, inspection: 1000, other: 2000 },
+  rehabCost: 15000,
+  furnishingsCost: 10000,
+  lenderPoints: 1,
+
+  // 3. Financing
+  loanAmount: 240000,
+  interestRate: 4.5,
+  amortizationYears: 30,
+  loanTerm: 30,
+  paymentFrequency: "Monthly",
+  interestOnlyMonths: 0,
+  secondLien: false,
+  secondLienAmount: 0,
+  secondLienRate: 0,
+  mortgageInsurance: false,
+
+  // 4. Operating Expenses (Fixed Monthly)
+  propertyTax: 3000,
+  insurance: 1200,
+  hoaFee: 200,
+  utilitiesWater: 100,
+  utilitiesElectric: 150,
+  utilitiesInternet: 50,
+  utilitiesGas: 80,
+  adminCosts: 100,
+
+  // 5. Operating Expenses (Variable/%)
+  managementFeePercent: 10,
+  maintenanceReservePercent: 5,
+  capexReservePercent: 5,
+  leasingFeePercent: 5,
+  vacancyPercent: 5,
+  badDebtPercent: 2,
+
+  // 6. Revenue
+  monthlyRent: 2000,
+  otherIncome: 500,
+  nightlyRate: 150,
+  occupancyRate: 75,
+  occupiedNights: 20,
+  seasonalUplift: Array(12).fill(1),
+  cleaningFee: 100,
+  channelFeePercent: 3,
+  turnoverCost: 200,
+  linenCost: 50,
+  upsells: 100,
+
+  // 7. Taxes
+  effectiveTaxRate: 25,
+  taxBrackets: [],
+  depreciationLife: 27.5,
+  interestDeductible: true,
+
+  // 8. Targets & Constraints
+  breakEvenMode: "CF=0",
+  targetDSCR: 1.2,
+  targetMonthlyMargin: 500,
+  targetPaybackMonths: 24,
+
+  // 10. Scenario & UX
+  presetScenario: "Base",
+  rentAdjustment: 0,
+  occupancyAdjustment: 0,
+  rateAdjustment: 0,
+  vacancyAdjustment: 0,
+
+  // 13. Technical / Dev
+  unitSystem: "Metric",
+  dataExport: false,
+  permalinkSharing: false,
+};
+
 function BreakEvenForm({ setResults }) {
-  const [inputs, setInputs] = useState({
-    // 1. Property & Market
-    propertyType: "SFH",
-    purchasePrice: "",
-    marketValue: "",
-    address: "",
-    region: "Caribbean",
-    currency: "TTD",
-    beds: "",
-    baths: "",
-    sizeSqFt: "",
-    hoaAllowed: false,
-
-    // 2. Acquisition & Upfront Costs
-    downPayment: "",
-    closingCosts: "",
-    closingCostsBreakdown: { legal: "", inspection: "", other: "" },
-    rehabCost: "",
-    furnishingsCost: "",
-    lenderPoints: "",
-
-    // 3. Financing
-    loanAmount: "",
-    interestRate: "",
-    amortizationYears: "",
-    loanTerm: "",
-    paymentFrequency: "Monthly",
-    interestOnlyMonths: "",
-    secondLien: false,
-    secondLienAmount: "",
-    secondLienRate: "",
-    mortgageInsurance: false,
-
-    // 4. Operating Expenses (Fixed Monthly)
-    propertyTax: "",
-    insurance: "",
-    hoaFee: "",
-    utilitiesWater: "",
-    utilitiesElectric: "",
-    utilitiesInternet: "",
-    utilitiesGas: "",
-    adminCosts: "",
-
-    // 5. Operating Expenses (Variable/%)
-    managementFeePercent: "",
-    maintenanceReservePercent: "",
-    capexReservePercent: "",
-    leasingFeePercent: "",
-    vacancyPercent: "",
-    badDebtPercent: "",
-
-    // 6. Revenue
-    monthlyRent: "",
-    otherIncome: "",
-    nightlyRate: "",
-    occupancyRate: "",
-    occupiedNights: "",
-    seasonalUplift: Array(12).fill(1),
-    cleaningFee: "",
-    channelFeePercent: "",
-    turnoverCost: "",
-    linenCost: "",
-    upsells: "",
-
-    // 7. Taxes
-    effectiveTaxRate: "",
-    taxBrackets: [],
-    depreciationLife: "",
-    interestDeductible: false,
-
-    // 8. Targets & Constraints
-    breakEvenMode: "CF=0",
-    targetDSCR: "",
-    targetMonthlyMargin: "",
-    targetPaybackMonths: "",
-
-    // 10. Scenario & UX
-    presetScenario: "Base",
-    rentAdjustment: 0,
-    occupancyAdjustment: 0,
-    rateAdjustment: 0,
-    vacancyAdjustment: 0,
-
-    // 13. Technical / Dev
-    unitSystem: "Metric",
-    dataExport: false,
-    permalinkSharing: false,
-  });
+  const [inputs, setInputs] = useState(initialPlaceholderData);
 
   // Toggles for collapsible advanced sections
   const [showAdvancedClosing, setShowAdvancedClosing] = useState(false);
@@ -286,6 +290,7 @@ function BreakEvenForm({ setResults }) {
               onChange={handleChange}
             />
             <button
+              className="be-btn-spacing"
               type="button"
               onClick={() => setShowAdvancedClosing(!showAdvancedClosing)}
             >
@@ -693,6 +698,7 @@ function BreakEvenForm({ setResults }) {
             </div>
             <div className="form-row">
               <button
+                className="be-btn"
                 type="button"
                 onClick={() => setShowSTRFields(!showSTRFields)}
               >
@@ -774,6 +780,7 @@ function BreakEvenForm({ setResults }) {
           </div>
           <div className="form-group">
             <button
+              className="be-btn"
               type="button"
               onClick={() => setShowAdvancedTaxes(!showAdvancedTaxes)}
             >
