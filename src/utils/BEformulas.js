@@ -38,23 +38,23 @@ export const calculateBreakEven = (inputs) => {
   };
 };
 
-// Helper Functions
+// ---- Helper Functions ----
 
 const calculateTotalUpfrontCosts = (inputs) => {
   const {
-    purchasePrice,
     downPayment,
     closingCosts,
     rehabCost,
     furnishingsCost,
     lenderPoints,
     loanAmount,
+    propertyType,
   } = inputs;
 
   const pointsCost =
     (parseFloat(lenderPoints) / 100) * parseFloat(loanAmount) || 0;
   const furnishings =
-    inputs.propertyType === "STR" ? parseFloat(furnishingsCost) || 0 : 0;
+    propertyType === "STR" ? parseFloat(furnishingsCost) || 0 : 0;
 
   return (
     parseFloat(downPayment) +
@@ -83,41 +83,33 @@ const calculateMortgagePayment = (inputs) => {
     parseFloat(amortizationYears) * (paymentFrequency === "Monthly" ? 12 : 26);
   const periodicRate = annualRate / (paymentFrequency === "Monthly" ? 12 : 26);
 
-  // Calculate regular payment
   let payment = 0;
-  if (principal > 0 && periodicRate > 0 && periods > 0) {
-    payment =
-      (principal * periodicRate * Math.pow(1 + periodicRate, periods)) /
-      (Math.pow(1 + periodicRate, periods) - 1);
+  if (principal > 0 && periods > 0) {
+    if (periodicRate > 0) {
+      payment =
+        (principal * periodicRate * Math.pow(1 + periodicRate, periods)) /
+        (Math.pow(1 + periodicRate, periods) - 1);
+    } else {
+      payment = principal / periods;
+    }
   }
 
-  // Handle interest-only period
-  if (interestOnlyMonths > 0) {
-    const interestOnlyPayment = principal * (annualRate / 12);
-    return {
-      regularPayment: payment,
-      interestOnlyPayment,
-      monthsInterestOnly: parseInt(interestOnlyMonths) || 0,
-    };
-  }
+  // Interest-only
+  const interestOnlyPayment = principal * (annualRate / 12);
 
-  // Handle second lien if exists
+  // Second lien
+  let secondLienPayment = 0;
   if (secondLien && secondLienAmount > 0) {
-    const secondLienPrincipal = parseFloat(secondLienAmount) || 0;
-    const secondLienRate = parseFloat(inputs.secondLienRate) / 100 || 0;
-    const secondLienPayment = (secondLienPrincipal * secondLienRate) / 12; // Simple interest-only for second lien
-
-    return {
-      regularPayment: payment + secondLienPayment,
-      interestOnlyPayment: null,
-      monthsInterestOnly: 0,
-    };
+    const slPrincipal = parseFloat(secondLienAmount) || 0;
+    const slRate = parseFloat(secondLienRate) / 100 || 0;
+    secondLienPayment = (slPrincipal * slRate) / 12;
   }
 
   return {
-    regularPayment: payment,
-    interestOnlyPayment: null,
-    monthsInterestOnly: 0,
+    regularPayment: payment + secondLienPayment,
+    interestOnlyPayment:
+      interestOnlyMonths > 0 ? interestOnlyPayment + secondLienPayment : null,
+    monthsInterestOnly: parseInt(interestOnlyMonths) || 0,
   };
 };
 
@@ -146,10 +138,10 @@ const calculateMonthlyOperatingExpenses = (inputs) => {
     linenCost,
   } = inputs;
 
-  // Fixed expenses
+  // Convert annual to monthly for propertyTax & insurance
   const fixedExpenses = {
-    propertyTax: parseFloat(propertyTax) || 0,
-    insurance: parseFloat(insurance) || 0,
+    propertyTax: (parseFloat(propertyTax) || 0) / 12,
+    insurance: (parseFloat(insurance) || 0) / 12,
     hoaFee: parseFloat(hoaFee) || 0,
     utilities: {
       water: parseFloat(utilitiesWater) || 0,
@@ -164,34 +156,31 @@ const calculateMonthlyOperatingExpenses = (inputs) => {
     (sum, val) =>
       sum +
       (typeof val === "object"
-        ? Object.values(val).reduce((subSum, subVal) => subSum + subVal, 0)
+        ? Object.values(val).reduce((s, v) => s + v, 0)
         : val),
     0
   );
 
-  // Variable expenses (percentage based)
-  let grossPotentialRent;
-  if (propertyType === "STR") {
-    const avgNightlyRate = parseFloat(nightlyRate) || 0;
-    const occupancy = parseFloat(occupancyRate) / 100 || 0;
-    grossPotentialRent = avgNightlyRate * 30 * occupancy;
-  } else {
-    grossPotentialRent = parseFloat(monthlyRent) || 0;
-  }
+  // Variable expenses (% of gross rent)
+  let grossPotentialRent =
+    propertyType === "STR"
+      ? (parseFloat(nightlyRate) || 0) *
+        30 *
+        ((parseFloat(occupancyRate) || 0) / 100)
+      : parseFloat(monthlyRent) || 0;
 
   const variableExpenses = {
     managementFee:
-      (parseFloat(managementFeePercent) / 100) * grossPotentialRent || 0,
+      (parseFloat(managementFeePercent) / 100) * grossPotentialRent,
     maintenanceReserve:
-      (parseFloat(maintenanceReservePercent) / 100) * grossPotentialRent || 0,
-    capexReserve:
-      (parseFloat(capexReservePercent) / 100) * grossPotentialRent || 0,
-    leasingFee: (parseFloat(leasingFeePercent) / 100) * grossPotentialRent || 0,
-    vacancy: (parseFloat(vacancyPercent) / 100) * grossPotentialRent || 0,
-    badDebt: (parseFloat(badDebtPercent) / 100) * grossPotentialRent || 0,
+      (parseFloat(maintenanceReservePercent) / 100) * grossPotentialRent,
+    capexReserve: (parseFloat(capexReservePercent) / 100) * grossPotentialRent,
+    leasingFee: (parseFloat(leasingFeePercent) / 100) * grossPotentialRent,
+    vacancy: (parseFloat(vacancyPercent) / 100) * grossPotentialRent,
+    badDebt: (parseFloat(badDebtPercent) / 100) * grossPotentialRent,
   };
 
-  // STR-specific expenses
+  // STR specific
   let strExpenses = 0;
   if (propertyType === "STR") {
     const cleaning = parseFloat(cleaningFee) || 0;
@@ -221,49 +210,40 @@ const calculateMonthlyRevenue = (inputs) => {
     nightlyRate,
     occupancyRate,
     seasonalUplift,
-    cleaningFee,
     upsells,
     rentAdjustment,
     occupancyAdjustment,
     rateAdjustment,
   } = inputs;
 
-  // Apply scenario adjustments
   const rentAdjFactor = 1 + (parseFloat(rentAdjustment) || 0) / 100;
   const occupancyAdjFactor = 1 + (parseFloat(occupancyAdjustment) || 0) / 100;
   const rateAdjFactor = 1 + (parseFloat(rateAdjustment) || 0) / 100;
 
   if (propertyType === "STR") {
-    // Calculate base STR revenue
-    let baseNightlyRate = (parseFloat(nightlyRate) || 0) * rateAdjFactor;
-    let baseOccupancy = (parseFloat(occupancyRate) || 0) * occupancyAdjFactor;
-
-    // Apply seasonal uplift
+    const baseNightlyRate = (parseFloat(nightlyRate) || 0) * rateAdjFactor;
+    const baseOccupancy =
+      ((parseFloat(occupancyRate) || 0) / 100) * occupancyAdjFactor;
     const currentMonth = new Date().getMonth();
-    const upliftFactor = seasonalUplift[currentMonth] || 1;
+    const upliftFactor = seasonalUplift?.[currentMonth] || 1;
     const adjustedNightlyRate = baseNightlyRate * upliftFactor;
-
-    // Calculate monthly revenue
-    const nightsBooked = (30 * baseOccupancy) / 100;
+    const nightsBooked = 30 * baseOccupancy;
     const rentalIncome = adjustedNightlyRate * nightsBooked;
-    const cleaningIncome = (parseFloat(cleaningFee) || 0) * nightsBooked;
-    const otherIncome = parseFloat(upsells) || 0;
-
+    const cleaningIncome = (parseFloat(inputs.cleaningFee) || 0) * nightsBooked;
+    const otherRev = parseFloat(upsells) || 0;
     return {
       rentalIncome,
       cleaningIncome,
-      otherIncome,
-      total: rentalIncome + cleaningIncome + otherIncome,
+      otherIncome: otherRev,
+      total: rentalIncome + cleaningIncome + otherRev,
     };
   } else {
-    // LTR revenue calculation
     const rentalIncome = (parseFloat(monthlyRent) || 0) * rentAdjFactor;
-    const otherIncomeVal = parseFloat(otherIncome) || 0;
-
+    const otherRev = parseFloat(otherIncome) || 0;
     return {
       rentalIncome,
-      otherIncome: otherIncomeVal,
-      total: rentalIncome + otherIncomeVal,
+      otherIncome: otherRev,
+      total: rentalIncome + otherRev,
     };
   }
 };
@@ -277,7 +257,10 @@ const calculateBreakEvenPoint = (
   const { breakEvenMode, targetDSCR, targetMonthlyMargin } = inputs;
 
   const mortgagePmt =
-    mortgagePayment.interestOnlyPayment || mortgagePayment.regularPayment;
+    mortgagePayment.monthsInterestOnly > 0
+      ? mortgagePayment.interestOnlyPayment
+      : mortgagePayment.regularPayment;
+
   const totalMonthlyExpenses = monthlyOperatingExpenses.total + mortgagePmt;
 
   switch (breakEvenMode) {
@@ -326,31 +309,25 @@ const calculateKeyMetrics = (
 ) => {
   const { purchasePrice, loanAmount, propertyType } = inputs;
 
-  // Basic financial metrics
   const mortgagePmt =
-    mortgagePayment.interestOnlyPayment || mortgagePayment.regularPayment;
+    mortgagePayment.monthsInterestOnly > 0
+      ? mortgagePayment.interestOnlyPayment
+      : mortgagePayment.regularPayment;
+
   const noi = monthlyRevenue.total - monthlyOperatingExpenses.total;
   const cashFlow = noi - mortgagePmt;
   const capRate = (noi * 12) / parseFloat(purchasePrice);
   const dscr = noi / mortgagePmt;
-
-  // ROI calculations
   const cocROI = (cashFlow * 12) / totalUpfrontCosts;
-
-  // LTV
   const ltv = (parseFloat(loanAmount) / parseFloat(purchasePrice)) * 100;
 
-  // STR-specific metrics if applicable
   let strMetrics = {};
   if (propertyType === "STR") {
     const avgNightlyRate = parseFloat(inputs.nightlyRate) || 0;
-    const occupancy = parseFloat(inputs.occupancyRate) / 100 || 0;
-    const revPar = avgNightlyRate * occupancy;
-    const adr = avgNightlyRate;
-
+    const occupancy = (parseFloat(inputs.occupancyRate) || 0) / 100;
     strMetrics = {
-      revPar,
-      adr,
+      revPar: avgNightlyRate * occupancy,
+      adr: avgNightlyRate,
       annualOccupancy: occupancy * 100,
     };
   }
@@ -364,24 +341,4 @@ const calculateKeyMetrics = (
     ltv,
     ...strMetrics,
   };
-};
-
-// Utility function to calculate loan payment (can be used elsewhere)
-export const calculateLoanPayment = (
-  principal,
-  annualRate,
-  years,
-  paymentsPerYear = 12
-) => {
-  const periodicRate = annualRate / paymentsPerYear;
-  const numberOfPayments = years * paymentsPerYear;
-
-  if (periodicRate === 0) {
-    return principal / numberOfPayments;
-  }
-
-  return (
-    (principal * periodicRate * Math.pow(1 + periodicRate, numberOfPayments)) /
-    (Math.pow(1 + periodicRate, numberOfPayments) - 1)
-  );
 };
