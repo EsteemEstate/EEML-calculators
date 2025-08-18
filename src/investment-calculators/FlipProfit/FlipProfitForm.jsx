@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import FlipProfitResults from "./FlipProfitResults";
 
 // --- Finance helpers ---
 const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
@@ -9,253 +10,105 @@ const pmt = (rateMonthly, nPeriods, principal) => {
 };
 
 function calculateFlip(inputs) {
-  const {
-    // A. Acquisition
-    purchasePrice = 0,
-    closingCosts = 0,
-    lenderPointsPct = 0,
-    lenderOriginationFee = 0,
-    lenderUnderwritingFee = 0,
-    cashPercent = 0,
+  // 1. Calculate loan amount if not provided
+  const loanAmount =
+    inputs.loanAmount || inputs.purchasePrice * (1 - inputs.cashPercent / 100);
 
-    // B. Financing
-    loanAmount: loanAmountRaw = 0,
-    interestRate = 0,
-    loanTermYears = 30,
-    interestOnly = true,
-    rehabFinanced = true,
+  // 2. Calculate monthly interest rate for amortized loans
+  const monthlyRate = inputs.interestRate / 100 / 12;
 
-    // C. Rehab
-    rehabBudget = 0,
-    contingencyPct = 0,
-    timelineMonths = 6,
+  // 3. Calculate all cost components
+  const upfrontCosts =
+    inputs.closingCosts +
+    (loanAmount * inputs.lenderPointsPct) / 100 +
+    inputs.lenderOriginationFee +
+    inputs.lenderUnderwritingFee;
 
-    // D. Holding
-    propertyTaxAnnual = 0,
-    insuranceMonthly = 0,
-    utilitiesMonthly = 0,
-    hoaMonthly = 0,
-    maintenanceMonthly = 0,
+  const monthlyHoldingCosts =
+    inputs.propertyTaxAnnual / 12 +
+    inputs.insuranceMonthly +
+    inputs.utilitiesMonthly +
+    inputs.hoaMonthly +
+    inputs.maintenanceMonthly;
 
-    // E. Sale
-    arv = 0,
-    agentCommissionPct = 0,
-    stagingMarketing = 0,
-    sellerClosingCosts = 0,
-    regionalPurchaseTaxes = 0,
-    regionalSaleTransferTaxes = 0,
-  } = inputs || {};
+  const holdingCosts = monthlyHoldingCosts * inputs.timelineMonths;
+  const totalRehabCost = inputs.rehabBudget * (1 + inputs.contingencyPct / 100);
 
-  // Loan amount resolution
-  let loanAmount = loanAmountRaw;
-  if (!loanAmount && cashPercent > 0 && cashPercent <= 100) {
-    const cashFrac = clamp(cashPercent / 100, 0, 1);
-    loanAmount = Math.max(0, purchasePrice * (1 - cashFrac));
-  }
+  // 4. Calculate cash invested (actual out-of-pocket)
+  const cashInvested =
+    (inputs.purchasePrice * inputs.cashPercent) / 100 +
+    upfrontCosts +
+    (inputs.rehabFinanced ? 0 : inputs.rehabBudget); // Only include actual rehab spent, not contingency
 
-  const pointsFee = (lenderPointsPct / 100) * loanAmount;
-  const lenderFees = pointsFee + lenderOriginationFee + lenderUnderwritingFee;
-
-  const rehabContingency = (contingencyPct / 100) * rehabBudget;
-  const totalRehab = rehabBudget + rehabContingency;
-
-  const acquisitionCash =
-    purchasePrice +
-    closingCosts +
-    regionalPurchaseTaxes +
-    lenderFees -
-    loanAmount;
-
-  const rMonthly = interestRate / 100 / 12;
-  const baseHoldMonthly =
-    propertyTaxAnnual / 12 +
-    insuranceMonthly +
-    utilitiesMonthly +
-    hoaMonthly +
-    maintenanceMonthly;
-
-  const drawMonths = Math.max(
-    1,
-    Math.floor(Math.min(timelineMonths, Math.ceil(timelineMonths / 2)))
-  );
-  const rehabDrawPerMonth = rehabFinanced ? totalRehab / drawMonths : 0;
-
-  let interestCarryTotal = 0;
-  let monthlyCashFlow = [];
-  let principalOutstanding = loanAmount;
-  const amortPayment = !interestOnly
-    ? pmt(rMonthly, loanTermYears * 12, loanAmount)
-    : 0;
-
-  for (let m = 1; m <= timelineMonths; m++) {
-    if (rehabFinanced && m <= drawMonths) {
-      principalOutstanding += rehabDrawPerMonth; // draws capitalized
-    }
-
-    const interestComponent = principalOutstanding * rMonthly;
-    const debtService = interestOnly ? interestComponent : amortPayment;
-    interestCarryTotal += interestComponent;
-
-    const rehabSpend = rehabFinanced
-      ? 0
-      : m <= drawMonths
-      ? totalRehab / drawMonths
-      : 0;
-    const monthOutflows = baseHoldMonthly + debtService + rehabSpend;
-
-    monthlyCashFlow.push({
-      month: m,
-      outflows: monthOutflows,
-      interest: interestComponent,
-      rehabSpend,
-      baseHold: baseHoldMonthly,
-      debtService,
-      principalOutstanding,
-    });
-
-    if (!interestOnly) {
-      const principalPaid = Math.max(0, debtService - interestComponent);
-      principalOutstanding = Math.max(0, principalOutstanding - principalPaid);
-    }
-  }
-
-  const payoffBalance = principalOutstanding; // amount to clear at sale
-
-  const agentFee = (agentCommissionPct / 100) * arv;
-  const fixedSaleCosts =
-    stagingMarketing + sellerClosingCosts + regionalSaleTransferTaxes;
-  const saleCosts = agentFee + fixedSaleCosts;
-
-  const grossSaleProceeds = arv;
-  const netSaleProceedsBeforeDebt = grossSaleProceeds - saleCosts;
-
-  const totalHoldCash = monthlyCashFlow.reduce((s, m) => s + m.outflows, 0);
-
-  const netCashAtSale = netSaleProceedsBeforeDebt - payoffBalance;
-
-  // Total cash invested (equity out-of-pocket)
-  const totalCashInvested = Math.max(0, acquisitionCash + totalHoldCash);
-
-  // Project cost for reporting
+  // 5. Calculate total project cost
   const totalProjectCost =
-    purchasePrice +
-    closingCosts +
-    regionalPurchaseTaxes +
-    lenderFees +
-    totalRehab +
-    totalHoldCash +
-    saleCosts;
+    inputs.purchasePrice +
+    totalRehabCost + // Includes contingency here
+    upfrontCosts +
+    holdingCosts +
+    inputs.regionalPurchaseTaxes;
 
-  // Net profit
-  const netProfit = netCashAtSale - (acquisitionCash + totalHoldCash);
+  // 6. CORRECTED LOAN PAYOFF CALCULATION
+  const totalInterest =
+    loanAmount * (inputs.interestRate / 100) * (inputs.timelineMonths / 12);
 
-  const roi = totalCashInvested > 0 ? (netProfit / totalCashInvested) * 100 : 0;
-  const annualizedRoi =
-    timelineMonths > 0
-      ? ((1 + netProfit / (totalCashInvested || 1)) ** (12 / timelineMonths) -
-          1) *
-        100
-      : 0;
+  const loanPayoff = inputs.interestOnly
+    ? loanAmount + totalInterest // Interest-only: principal + accrued interest
+    : loanAmount - // Amortized: subtract principal paid during hold period
+      (pmt(monthlyRate, inputs.loanTermYears * 12, loanAmount) *
+        inputs.timelineMonths -
+        totalInterest);
 
-  // Break-even sale price
-  const c = agentCommissionPct / 100;
-  const cashOutflows = acquisitionCash + totalHoldCash;
+  // 7. Calculate sale costs
+  const commission = inputs.arv * (inputs.agentCommissionPct / 100);
+  const saleCosts =
+    commission +
+    inputs.stagingMarketing +
+    inputs.sellerClosingCosts +
+    inputs.regionalSaleTransferTaxes;
+
+  // 8. Calculate net profit
+  const netProfit = inputs.arv - totalProjectCost - saleCosts - loanPayoff;
+
+  // 9. Calculate ROI metrics
+  const roi = (netProfit / cashInvested) * 100;
+  const annualizedRoi = roi * (12 / inputs.timelineMonths);
+
+  // 10. Calculate break-even sale price
+  const totalFixedSaleCosts =
+    inputs.stagingMarketing +
+    inputs.sellerClosingCosts +
+    inputs.regionalSaleTransferTaxes;
   const breakEvenSalePrice =
-    (payoffBalance + cashOutflows + fixedSaleCosts) / (1 - c || 1);
-
-  // Profit curve (±40% band around ARV, min 30 steps)
-  const minSP = Math.max(0, arv * 0.6);
-  const maxSP = Math.max(arv, arv * 1.4);
-  const steps = 30;
-  const profitCurve = Array.from({ length: steps + 1 }, (_, i) => {
-    const sp = minSP + ((maxSP - minSP) * i) / steps;
-    const saleCostsVar = c * sp + fixedSaleCosts;
-    const netSaleVar = sp - saleCostsVar - payoffBalance;
-    const profitVar = netSaleVar - cashOutflows;
-    return { sp, profit: profitVar };
-  });
-
-  // Cash flow timeline: last month add sale inflow
-  const timeline = monthlyCashFlow.map((m) => ({ ...m }));
-  if (timeline.length > 0) {
-    const last = timeline.length - 1;
-    timeline[last].saleProceeds = netCashAtSale;
-    timeline[last].netMonth = netCashAtSale - timeline[last].outflows;
-  }
-
-  // Sensitivity (±10% simple)
-  const reCalc = (over) => calculateFlip({ ...inputs, ...over });
-  const sens = [
-    {
-      label: "ARV",
-      up: reCalc({ arv: arv * 1.1 }).netProfit,
-      down: reCalc({ arv: arv * 0.9 }).netProfit,
-    },
-    {
-      label: "Rehab Cost",
-      up: reCalc({ rehabBudget: rehabBudget * 1.1 }).netProfit,
-      down: reCalc({ rehabBudget: rehabBudget * 0.9 }).netProfit,
-    },
-    {
-      label: "Hold Time (mo)",
-      up: reCalc({ timelineMonths: Math.round(timelineMonths * 1.2) })
-        .netProfit,
-      down: reCalc({
-        timelineMonths: Math.max(1, Math.round(timelineMonths * 0.8)),
-      }).netProfit,
-    },
-    {
-      label: "Interest Rate",
-      up: reCalc({ interestRate: interestRate + 2 }).netProfit,
-      down: reCalc({ interestRate: Math.max(0, interestRate - 2) }).netProfit,
-    },
-  ].map((s) => ({
-    label: s.label,
-    deltaUp: s.up - netProfit,
-    deltaDown: netProfit - s.down,
-  }));
-
-  // Leverage sweep: ROI vs LTV (0..90%)
-  const leverageSeries = Array.from({ length: 10 }, (_, i) => 0.1 * i).map(
-    (ltv) => {
-      const la = purchasePrice * ltv;
-      const tmp = calculateFlip({ ...inputs, loanAmount: la, cashPercent: 0 });
-      return {
-        ltv: Math.round(ltv * 100),
-        roi: tmp.roi,
-        netProfit: tmp.netProfit,
-      };
-    }
-  );
+    (totalProjectCost + loanPayoff + totalFixedSaleCosts) /
+    (1 - inputs.agentCommissionPct / 100);
 
   return {
-    inputs: { ...inputs, loanAmount },
-    acquisitionCash,
-    lenderFees,
-    totalRehab,
-    rehabContingency,
-    interestCarryTotal,
-    totalHoldCash,
-    payoffBalance,
-    saleCosts,
-    agentFee,
-    grossSaleProceeds,
-    netSaleProceedsBeforeDebt,
-    netCashAtSale,
-    totalProjectCost,
-    totalCashInvested,
     netProfit,
     roi,
     annualizedRoi,
-    roe: roi,
     breakEvenSalePrice,
-    profitCurve,
-    timeline,
-    sensitivity: sens,
-    leverageSeries,
+    totalProjectCost,
+    totalCashInvested: cashInvested,
+    payoffBalance: loanPayoff,
+    saleCosts,
+    costBreakdown: {
+      purchasePrice: inputs.purchasePrice,
+      rehabCost: totalRehabCost,
+      upfrontCosts,
+      holdingCosts,
+      loanDetails: {
+        principal: loanAmount,
+        interestPaid: totalInterest,
+        totalPayoff: loanPayoff,
+      },
+      saleCostDetails: {
+        commission,
+        otherCosts: saleCosts - commission,
+      },
+    },
   };
 }
-
 const SectionTitleWithTooltip = ({ title, description }) => (
   <div className="section-title-container">
     <h2 className="section-title">{title}</h2>
@@ -268,41 +121,41 @@ const SectionTitleWithTooltip = ({ title, description }) => (
 function FlipProfitForm({ setResults }) {
   const [inputs, setInputs] = useState({
     // A. Acquisition
-    purchasePrice: "",
-    closingCosts: "",
-    lenderPointsPct: "",
-    lenderOriginationFee: "",
-    lenderUnderwritingFee: "",
-    cashPercent: "",
+    purchasePrice: 200000,
+    closingCosts: 5000,
+    lenderPointsPct: 2,
+    lenderOriginationFee: 1000,
+    lenderUnderwritingFee: 500,
+    cashPercent: 25,
 
     // B. Financing
-    loanAmount: "",
-    interestRate: "",
+    loanAmount: 150000,
+    interestRate: 8,
     loanTermYears: 30,
     interestOnly: true,
     rehabFinanced: true,
 
     // C. Rehab
-    rehabBudget: "",
+    rehabBudget: 50000,
     contingencyPct: 10,
     timelineMonths: 6,
 
     // D. Holding
-    propertyTaxAnnual: "",
-    insuranceMonthly: "",
-    utilitiesMonthly: "",
-    hoaMonthly: "",
-    maintenanceMonthly: "",
+    propertyTaxAnnual: 3000,
+    insuranceMonthly: 150,
+    utilitiesMonthly: 200,
+    hoaMonthly: 0,
+    maintenanceMonthly: 100,
 
     // E. Sale
-    arv: "",
+    arv: 350000,
     agentCommissionPct: 5,
-    stagingMarketing: "",
-    sellerClosingCosts: "",
+    stagingMarketing: 2000,
+    sellerClosingCosts: 5000,
 
     // Regional (optional)
-    regionalPurchaseTaxes: "",
-    regionalSaleTransferTaxes: "",
+    regionalPurchaseTaxes: 1000,
+    regionalSaleTransferTaxes: 1500,
   });
 
   const handleChange = (e) => {
@@ -319,43 +172,51 @@ function FlipProfitForm({ setResults }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log("Form submitted with inputs:", inputs);
 
-    const v = {
-      ...inputs,
-      purchasePrice: inputs.purchasePrice || 0,
-      closingCosts: inputs.closingCosts || 0,
-      lenderPointsPct: inputs.lenderPointsPct || 0,
-      lenderOriginationFee: inputs.lenderOriginationFee || 0,
-      lenderUnderwritingFee: inputs.lenderUnderwritingFee || 0,
-      cashPercent: inputs.cashPercent || 0,
-
-      loanAmount: inputs.loanAmount || 0,
-      interestRate: inputs.interestRate || 0,
-      loanTermYears: inputs.loanTermYears || 30,
-      interestOnly: !!inputs.interestOnly,
-      rehabFinanced: !!inputs.rehabFinanced,
-
-      rehabBudget: inputs.rehabBudget || 0,
-      contingencyPct: inputs.contingencyPct || 0,
-      timelineMonths: inputs.timelineMonths || 6,
-
-      propertyTaxAnnual: inputs.propertyTaxAnnual || 0,
-      insuranceMonthly: inputs.insuranceMonthly || 0,
-      utilitiesMonthly: inputs.utilitiesMonthly || 0,
-      hoaMonthly: inputs.hoaMonthly || 0,
-      maintenanceMonthly: inputs.maintenanceMonthly || 0,
-
-      arv: inputs.arv || 0,
-      agentCommissionPct: inputs.agentCommissionPct || 0,
-      stagingMarketing: inputs.stagingMarketing || 0,
-      sellerClosingCosts: inputs.sellerClosingCosts || 0,
-
-      regionalPurchaseTaxes: inputs.regionalPurchaseTaxes || 0,
-      regionalSaleTransferTaxes: inputs.regionalSaleTransferTaxes || 0,
+    // Convert all values to numbers and provide fallbacks
+    const preparedInputs = {
+      purchasePrice: Number(inputs.purchasePrice) || 0,
+      closingCosts: Number(inputs.closingCosts) || 0,
+      lenderPointsPct: Number(inputs.lenderPointsPct) || 0,
+      lenderOriginationFee: Number(inputs.lenderOriginationFee) || 0,
+      lenderUnderwritingFee: Number(inputs.lenderUnderwritingFee) || 0,
+      cashPercent: Number(inputs.cashPercent) || 0,
+      loanAmount: Number(inputs.loanAmount) || 0,
+      interestRate: Number(inputs.interestRate) || 0,
+      loanTermYears: Number(inputs.loanTermYears) || 30,
+      interestOnly: Boolean(inputs.interestOnly),
+      rehabFinanced: Boolean(inputs.rehabFinanced),
+      rehabBudget: Number(inputs.rehabBudget) || 0,
+      contingencyPct: Number(inputs.contingencyPct) || 0,
+      timelineMonths: Number(inputs.timelineMonths) || 6,
+      propertyTaxAnnual: Number(inputs.propertyTaxAnnual) || 0,
+      insuranceMonthly: Number(inputs.insuranceMonthly) || 0,
+      utilitiesMonthly: Number(inputs.utilitiesMonthly) || 0,
+      hoaMonthly: Number(inputs.hoaMonthly) || 0,
+      maintenanceMonthly: Number(inputs.maintenanceMonthly) || 0,
+      arv: Number(inputs.arv) || 0,
+      agentCommissionPct: Number(inputs.agentCommissionPct) || 0,
+      stagingMarketing: Number(inputs.stagingMarketing) || 0,
+      sellerClosingCosts: Number(inputs.sellerClosingCosts) || 0,
+      regionalPurchaseTaxes: Number(inputs.regionalPurchaseTaxes) || 0,
+      regionalSaleTransferTaxes: Number(inputs.regionalSaleTransferTaxes) || 0,
     };
 
-    const res = calculateFlip(v);
-    setResults(res);
+    console.log("Prepared inputs for calculation:", preparedInputs);
+
+    try {
+      const calculationResults = calculateFlip(preparedInputs);
+      console.log("Calculation results:", calculationResults);
+
+      if (calculationResults) {
+        setResults(calculationResults);
+      } else {
+        console.error("Calculation returned no results");
+      }
+    } catch (error) {
+      console.error("Calculation error:", error);
+    }
   };
 
   return (

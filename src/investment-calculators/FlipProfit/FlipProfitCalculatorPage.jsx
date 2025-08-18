@@ -1,17 +1,21 @@
 // =============================
 // File: FlipProfitCalculatorPage.jsx
 // =============================
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import FlipProfitForm from "./FlipProfitForm";
 import FlipProfitResults from "./FlipProfitResults";
 import "../../styles/FlipProfitCalculator.css";
 
-/******************** Page ********************/
 const FlipProfitCalculatorPage = () => {
   const [results, setResults] = useState(null);
 
+  // Add this useEffect to debug state changes
+  useEffect(() => {
+    console.log("Results state updated:", results);
+  }, [results]);
+
   return (
-    <div className="roi-calculator-wrapper">
+    <div className="calculator-wrapper">
       <header className="calculator-header">
         <h1>EEML Flip Profit Calculator</h1>
         <p className="subtitle">
@@ -48,25 +52,7 @@ const FlipProfitCalculatorPage = () => {
         {/* Results Column */}
         <div className="results-column">
           {results ? (
-            <>
-              <FlipProfitResults data={results} />
-
-              <div className="chart-row">
-                <div className="chart-wrapper full-width">
-                  <ProfitCurveChart data={results} />
-                </div>
-              </div>
-
-              <div className="chart-row">
-                <CashFlowTimelineChart data={results} />
-                <CostWaterfallChart data={results} />
-              </div>
-
-              <div className="chart-row">
-                <SensitivityTornadoChart data={results} />
-                <LeverageEquityChart data={results} />
-              </div>
-            </>
+            <FlipProfitResults data={results} />
           ) : (
             <div className="empty-state">
               <div className="empty-icon">🏗️</div>

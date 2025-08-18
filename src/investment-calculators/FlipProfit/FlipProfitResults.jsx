@@ -1,7 +1,8 @@
-// src/investment-calculators/FlipProfit/FlipProfitResults.jsx
 import React from "react";
 
 function FlipProfitResults({ data }) {
+  console.log("Results data received:", data); // Debug log
+
   if (!data || typeof data.netProfit === "undefined") {
     return (
       <div className="empty-results">
@@ -33,7 +34,6 @@ function FlipProfitResults({ data }) {
   return (
     <div className="results-container">
       <h2 className="results-header">Flip Analysis Summary</h2>
-
       {/* Key Metrics Cards */}
       <div className="metrics-cards">
         <div className={`metric-card ${roiClass}`}>
@@ -72,7 +72,6 @@ function FlipProfitResults({ data }) {
           </div>
         </div>
       </div>
-
       {/* Detailed Results Grid */}
       <div className="detailed-results">
         <div className="result-row">
@@ -98,7 +97,39 @@ function FlipProfitResults({ data }) {
           <span className="result-value">{formatCurrency(data.saleCosts)}</span>
         </div>
       </div>
-
+      <div className="cost-breakdown">
+        <h3>Cost Breakdown</h3>
+        <div className="result-row">
+          <span className="result-label">Purchase Price:</span>
+          <span className="result-value">
+            {formatCurrency(data.costBreakdown?.purchasePrice)}
+          </span>
+        </div>
+        <div className="result-row">
+          <span className="result-label">Rehab Costs:</span>
+          <span className="result-value">
+            {formatCurrency(data.costBreakdown?.rehabCost)}
+          </span>
+        </div>
+        <div className="result-row">
+          <span className="result-label">Upfront Costs:</span>
+          <span className="result-value">
+            {formatCurrency(data.costBreakdown?.upfrontCosts)}
+          </span>
+        </div>
+        <div className="result-row">
+          <span className="result-label">Holding Costs:</span>
+          <span className="result-value">
+            {formatCurrency(data.costBreakdown?.holdingCosts)}
+          </span>
+        </div>
+        <div className="result-row">
+          <span className="result-label">Loan Interest:</span>
+          <span className="result-value">
+            {formatCurrency(data.costBreakdown?.loanDetails?.interestPaid)}
+          </span>
+        </div>
+      </div>
       {/* Investment Health */}
       <div
         className={`investment-health ${

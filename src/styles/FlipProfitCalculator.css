@@ -1,0 +1,12 @@
+/* Ensure form is visible and interactive */
+.form-container {
+  padding: 20px;
+}
+
+/* Make sure results are visible */
+.results-container {
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-top: 20px;
+}

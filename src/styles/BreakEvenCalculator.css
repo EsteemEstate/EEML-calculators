@@ -15,16 +15,16 @@
 /* ================= */
 /*  Results Container */
 /* ================= */
-.break-even-results {
+.results-container {
   padding: 20px;
   border: 1px solid var(--border);
   border-radius: 10px;
-  background: white;
+  background: var(--card-bg);
   box-shadow: var(--shadow);
   animation: fadeIn 0.4s ease-out;
 }
 
-.break-even-results h2 {
+.results-header {
   font-size: 1.5rem;
   margin-bottom: 1.5rem;
   color: var(--text);
@@ -35,14 +35,14 @@
 /* =============== */
 /*  Metrics Cards  */
 /* =============== */
-.be-metrics-cards {
+.metrics-cards {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
   margin-bottom: 1.5rem;
 }
 
-.be-metric-card {
+.metric-card {
   flex: 1;
   min-width: 180px;
   padding: 15px;
@@ -53,44 +53,52 @@
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.be-metric-card:hover {
+.metric-card:hover {
   transform: translateY(-3px);
   box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
 }
 
-.be-metric-label {
+.metric-label {
   display: block;
   font-weight: 600;
   margin-bottom: 0.25rem;
   color: var(--text-light);
 }
 
-.be-metric-value {
+.metric-value {
   font-size: 1.2rem;
   font-weight: 700;
   color: var(--primary);
 }
 
+.positive-value {
+  color: var(--success);
+}
+
+.negative-value {
+  color: var(--danger);
+}
+
 /* ================== */
 /*  Detailed Results  */
 /* ================== */
-.be-detailed-results {
+.detailed-results {
   margin-top: 1rem;
 }
 
-.be-result-row {
+.result-row {
   display: flex;
   justify-content: space-between;
   padding: 0.75rem 0;
   border-bottom: 1px solid var(--border);
 }
 
-.be-result-label {
+.result-label {
   font-weight: 500;
   color: var(--text);
 }
 
-.be-result-value {
+.result-value {
   font-weight: 600;
   color: var(--primary);
 }
@@ -98,20 +106,20 @@
 /* ================= */
 /*  Health Section   */
 /* ================= */
-.break-even-health {
+.investment-health {
   margin-top: 2rem;
   padding: 1rem;
   border-radius: 8px;
   font-size: 0.95rem;
 }
 
-.break-even-health.positive {
+.investment-health.positive {
   background-color: #eafaf1;
   border: 1px solid #c8e6c9;
   color: var(--success);
 }
 
-.break-even-health.negative {
+.investment-health.negative {
   background-color: #fff0f0;
   border: 1px solid #ffcdd2;
   color: var(--danger);
@@ -120,7 +128,7 @@
 /* =============== */
 /*  Empty State    */
 /* =============== */
-.break-even-empty {
+.empty-state {
   text-align: center;
   padding: 2rem;
   background: var(--card-bg);
@@ -158,21 +166,21 @@
   font-size: 1.2rem;
 }
 
-/* Chart-specific accents */
+/* Chart accents */
 .chart-container:nth-child(1) {
-  border-left: 4px solid #3b82f6; /* blue */
+  border-left: 4px solid #3b82f6;
 }
 .chart-container:nth-child(2) {
-  border-left: 4px solid #10b981; /* green */
+  border-left: 4px solid #10b981;
 }
 .chart-container:nth-child(3) {
-  border-left: 4px solid #f59e0b; /* amber */
+  border-left: 4px solid #f59e0b;
 }
 
 /* =============== */
 /*  Buttons        */
 /* =============== */
-.be-btn {
+.submit-button {
   background: var(--primary);
   color: white;
   font-weight: 600;
@@ -181,35 +189,27 @@
   border-radius: 8px;
   cursor: pointer;
   transition: background 0.25s ease, transform 0.15s ease;
+  margin-top: 1rem;
 }
 
-.be-btn:hover {
+.submit-button:hover {
   background: #0056b3;
   transform: translateY(-2px);
 }
 
-.be-btn:active {
+.submit-button:active {
   transform: translateY(0);
-}
-
-.be-btn.secondary {
-  background: #e0e0e0;
-  color: var(--text);
-}
-
-.be-btn.secondary:hover {
-  background: #d5d8dc;
 }
 
 /* =============== */
 /*  Responsive     */
 /* =============== */
 @media (max-width: 768px) {
-  .be-metrics-cards {
+  .metrics-cards {
     flex-direction: column;
   }
 
-  .be-metric-card {
+  .metric-card {
     width: 100%;
   }
 
@@ -230,38 +230,4 @@
     opacity: 1;
     transform: translateY(0);
   }
-}
-
-.be-btn-spacing {
-  background: #3498db; /* primary color from Cap Rate CSS */
-  color: white;
-  font-weight: 600;
-  padding: 10px 18px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.25s ease, transform 0.15s ease;
-  margin-top: 1rem !important; /* added spacing */
-
-  /* Optional: display inline-block for consistent spacing */
-  display: inline-block;
-}
-
-.be-btn-spacing:hover {
-  background: #2980b9; /* darker shade for hover */
-  transform: translateY(-2px);
-}
-
-.be-btn-spacing:active {
-  transform: translateY(0);
-}
-
-/* Secondary variant */
-.be-btn-spacing.secondary {
-  background: #e1e1e1; /* light gray */
-  color: #2c3e50; /* dark text */
-}
-
-.be-btn-spacing.secondary:hover {
-  background: #d5d8dc; /* slightly darker gray on hover */
 }
