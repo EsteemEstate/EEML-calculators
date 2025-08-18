@@ -3,7 +3,8 @@ import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import ROICalculatorPage from "./investment-calculators/ROI/ROICalculatorPage";
 import RentalYieldCalculatorPage from "./investment-calculators/RentalYield/RentalYieldCalculatorPage";
 import CapRateCalculatorPage from "./investment-calculators/CapRate/CapRateCalculatorPage";
-import BECalculatorPage from "./investment-calculators/BreakEven/BECalculatorPage"; // ✅ New import
+import BECalculatorPage from "./investment-calculators/BreakEven/BECalculatorPage";
+import FlipProfitCalculatorPage from "./investment-calculators/FlipProfit/FlipProfitCalculatorPage"; // ✅ New import
 import "./App.css";
 
 function App() {
@@ -29,6 +30,10 @@ function App() {
           <span className="nav-divider">|</span>
           <Link to="/break-even" className="nav-link">
             Break-Even Calculator
+          </Link>
+          <span className="nav-divider">|</span>
+          <Link to="/flip-profit" className="nav-link">
+            Flip Profit Calculator
           </Link>{" "}
           {/* ✅ New link */}
         </nav>
@@ -52,7 +57,11 @@ function App() {
               element={<RentalYieldCalculatorPage />}
             />
             <Route path="/cap-rate" element={<CapRateCalculatorPage />} />
-            <Route path="/break-even" element={<BECalculatorPage />} />{" "}
+            <Route path="/break-even" element={<BECalculatorPage />} />
+            <Route
+              path="/flip-profit"
+              element={<FlipProfitCalculatorPage />}
+            />{" "}
             {/* ✅ New route */}
           </Routes>
         </main>
