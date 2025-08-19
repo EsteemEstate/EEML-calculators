@@ -10,3 +10,40 @@
   border-radius: 4px;
   margin-top: 20px;
 }
+
+/* Container */
+.flip-profit-calculator {
+  padding: 2rem;
+}
+
+/* 3-column grid */
+.calculator-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr 1.8fr; /* Info | Form | Results */
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+/* Panels */
+.info-panel,
+.form-panel,
+.results-panel {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+/* Empty results placeholder */
+.empty-results {
+  text-align: center;
+  color: #777;
+  font-size: 0.95rem;
+}
+
+.results-chart {
+  margin-top: 2rem;
+  background: #fafafa;
+  padding: 1rem;
+  border-radius: 10px;
+}

@@ -1,4 +1,6 @@
+// FlipProfitResults.jsx
 import React from "react";
+import FlipProfitCharts from "./FlipProfitCharts"; // Ensure this path is correct
 
 function FlipProfitResults({ data }) {
   console.log("Results data received:", data); // Debug log
@@ -149,6 +151,7 @@ function FlipProfitResults({ data }) {
           </p>
         )}
       </div>
+      {data && <FlipProfitCharts data={data} />}
     </div>
   );
 }

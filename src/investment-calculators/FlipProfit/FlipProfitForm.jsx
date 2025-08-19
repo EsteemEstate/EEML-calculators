@@ -121,41 +121,41 @@ const SectionTitleWithTooltip = ({ title, description }) => (
 function FlipProfitForm({ setResults }) {
   const [inputs, setInputs] = useState({
     // A. Acquisition
-    purchasePrice: 200000,
-    closingCosts: 5000,
-    lenderPointsPct: 2,
-    lenderOriginationFee: 1000,
-    lenderUnderwritingFee: 500,
-    cashPercent: 25,
+    purchasePrice: "",
+    closingCosts: "",
+    lenderPointsPct: "",
+    lenderOriginationFee: "",
+    lenderUnderwritingFee: "",
+    cashPercent: "",
 
     // B. Financing
-    loanAmount: 150000,
-    interestRate: 8,
-    loanTermYears: 30,
-    interestOnly: true,
-    rehabFinanced: true,
+    loanAmount: "",
+    interestRate: "",
+    loanTermYears: "",
+    interestOnly: false,
+    rehabFinanced: false,
 
     // C. Rehab
-    rehabBudget: 50000,
-    contingencyPct: 10,
-    timelineMonths: 6,
+    rehabBudget: "",
+    contingencyPct: "",
+    timelineMonths: "",
 
     // D. Holding
-    propertyTaxAnnual: 3000,
-    insuranceMonthly: 150,
-    utilitiesMonthly: 200,
-    hoaMonthly: 0,
-    maintenanceMonthly: 100,
+    propertyTaxAnnual: "",
+    insuranceMonthly: "",
+    utilitiesMonthly: "",
+    hoaMonthly: "",
+    maintenanceMonthly: "",
 
     // E. Sale
-    arv: 350000,
-    agentCommissionPct: 5,
-    stagingMarketing: 2000,
-    sellerClosingCosts: 5000,
+    arv: "",
+    agentCommissionPct: "",
+    stagingMarketing: "",
+    sellerClosingCosts: "",
 
     // Regional (optional)
-    regionalPurchaseTaxes: 1000,
-    regionalSaleTransferTaxes: 1500,
+    regionalPurchaseTaxes: "",
+    regionalSaleTransferTaxes: "",
   });
 
   const handleChange = (e) => {
