@@ -3,7 +3,7 @@ import React from "react";
 function BreakEvenResults({ data }) {
   if (!data || data.noi === undefined || data.noi === null) {
     return (
-      <div className="break-even-empty">
+      <div className="results-empty">
         No data to display. Please submit the form.
       </div>
     );
@@ -21,6 +21,7 @@ function BreakEvenResults({ data }) {
     cocROI,
   } = data;
 
+  // Formatting helpers
   const formatCurrency = (value) =>
     typeof value === "number"
       ? value.toLocaleString("en-US", {
@@ -35,94 +36,82 @@ function BreakEvenResults({ data }) {
     typeof value === "number" ? `${value.toFixed(2)}%` : "N/A";
 
   const isProfitable = cashFlow > 0;
+  const resultColor = isProfitable ? "positive-value" : "negative-value";
 
   return (
-    <div className="break-even-results">
+    <div className="results-container">
       <h2 className="results-header">Investment Analysis Summary</h2>
 
       {/* Key Metrics Cards */}
-      <div className="be-metrics-cards">
-        <div
-          className={`be-metric-card ${
-            isProfitable ? "positive-value" : "negative-value"
-          }`}
-        >
+      <div className="metrics-cards">
+        <div className={`metric-card ${resultColor}`}>
           <div className="metric-content">
-            <span className="be-metric-label">Net Operating Income</span>
-            <span className="be-metric-value">{formatCurrency(noi)}</span>
+            <span className="metric-label">Net Operating Income</span>
+            <span className="metric-value">{formatCurrency(noi)}</span>
           </div>
         </div>
 
-        <div
-          className={`be-metric-card ${
-            isProfitable ? "positive-value" : "negative-value"
-          }`}
-        >
+        <div className={`metric-card ${resultColor}`}>
           <div className="metric-content">
-            <span className="be-metric-label">Monthly Cash Flow</span>
-            <span className="be-metric-value">{formatCurrency(cashFlow)}</span>
+            <span className="metric-label">Monthly Cash Flow</span>
+            <span className="metric-value">{formatCurrency(cashFlow)}</span>
           </div>
         </div>
 
-        <div
-          className={`be-metric-card ${
-            isProfitable ? "positive-value" : "negative-value"
-          }`}
-        >
+        <div className={`metric-card ${resultColor}`}>
           <div className="metric-content">
-            <span className="be-metric-label">DSCR</span>
-            <span className="be-metric-value">{dscr.toFixed(2)}</span>
+            <span className="metric-label">DSCR</span>
+            <span className="metric-value">{dscr?.toFixed(2) ?? "N/A"}</span>
+          </div>
+        </div>
+
+        <div className={`metric-card ${resultColor}`}>
+          <div className="metric-content">
+            <span className="metric-label">Break-Even Revenue</span>
+            <span className="metric-value">
+              {formatCurrency(breakEvenRevenue)}
+            </span>
           </div>
         </div>
       </div>
 
-      {/* Detailed Results */}
-      <div className="be-detailed-results">
-        <div className="be-result-row">
-          <span className="be-result-label">Break-Even Revenue:</span>
-          <span className="be-result-value">
-            {formatCurrency(breakEvenRevenue)}
-          </span>
+      {/* Detailed Results Grid */}
+      <div className="detailed-results">
+        <div className="result-row">
+          <span className="result-label">Required Rent:</span>
+          <span className="result-value">{formatCurrency(breakEvenRent)}</span>
         </div>
-        <div className="be-result-row">
-          <span className="be-result-label">Required Rent:</span>
-          <span className="be-result-value">
-            {formatCurrency(breakEvenRent)}
-          </span>
-        </div>
-        <div className="be-result-row">
-          <span className="be-result-label">Total Expenses:</span>
-          <span className="be-result-value">
+
+        <div className="result-row">
+          <span className="result-label">Total Expenses:</span>
+          <span className="result-value">
             {formatCurrency(
               totalOperatingExpenses?.total || totalOperatingExpenses
             )}
           </span>
         </div>
-        <div className="be-result-row">
-          <span className="be-result-label">Mortgage Payment:</span>
-          <span className="be-result-value">
+
+        <div className="result-row">
+          <span className="result-label">Mortgage Payment:</span>
+          <span className="result-value">
             {formatCurrency(mortgagePayment?.regularPayment || mortgagePayment)}
           </span>
         </div>
-      </div>
 
-      {/* ROI Metrics */}
-      <div className="be-detailed-results">
-        <div className="be-result-row">
-          <span className="be-result-label">Cap Rate:</span>
-          <span className="be-result-value">
-            {formatPercent(capRate * 100)}
-          </span>
+        <div className="result-row">
+          <span className="result-label">Cap Rate:</span>
+          <span className="result-value">{formatPercent(capRate * 100)}</span>
         </div>
-        <div className="be-result-row">
-          <span className="be-result-label">Cash-on-Cash ROI:</span>
-          <span className="be-result-value">{formatPercent(cocROI * 100)}</span>
+
+        <div className="result-row">
+          <span className="result-label">Cash-on-Cash ROI:</span>
+          <span className="result-value">{formatPercent(cocROI * 100)}</span>
         </div>
       </div>
 
       {/* Investment Health */}
       <div
-        className={`break-even-health ${
+        className={`investment-health ${
           isProfitable ? "positive" : "negative"
         }`}
       >

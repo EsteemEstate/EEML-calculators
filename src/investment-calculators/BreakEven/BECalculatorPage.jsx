@@ -1,7 +1,8 @@
+// BreakEvenCalculatorPage.jsx
 import React, { useState } from "react";
 import BreakEvenForm from "./BreakEvenForm";
 import BreakEvenResults from "./BreakEvenResults";
-import RevenueCostStack from "./RevenueCostStack";
+import BreakEvenCharts from "./BreakEvenCharts"; // Import the new charts component
 import "../../styles/BreakEvenCalculator.css";
 
 const BreakEvenCalculatorPage = () => {
@@ -74,12 +75,9 @@ const BreakEvenCalculatorPage = () => {
             <>
               <BreakEvenResults data={results} />
 
-              {/* Charts Section - Only Revenue vs Cost Stack remains */}
+              {/* Charts Section */}
               <div className="charts-section">
-                <div className="chart-container">
-                  <h3>Revenue vs Cost Stack</h3>
-                  <RevenueCostStack formData={results} />
-                </div>
+                <BreakEvenCharts data={results} /> {/* Add the charts here */}
               </div>
             </>
           ) : (

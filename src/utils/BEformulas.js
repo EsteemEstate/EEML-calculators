@@ -1,3 +1,4 @@
+// BEformulas.js - Updated with Chart Data Generation
 export const calculateBreakEven = (inputs) => {
   // 1. Calculate Total Upfront Costs
   const totalUpfrontCosts = calculateTotalUpfrontCosts(inputs);
@@ -28,6 +29,14 @@ export const calculateBreakEven = (inputs) => {
     monthlyRevenue
   );
 
+  // 7. NEW: Calculate Chart Data
+  const chartData = generateChartData(
+    inputs,
+    mortgagePayment,
+    monthlyOperatingExpenses,
+    breakEvenResult
+  );
+
   return {
     ...breakEvenResult,
     ...metrics,
@@ -35,11 +44,105 @@ export const calculateBreakEven = (inputs) => {
     mortgagePayment,
     monthlyOperatingExpenses,
     monthlyRevenue,
+    chartData, // NEW: Include the chart data in the results
   };
 };
 
-// ---- Helper Functions ----
+// ---- NEW FUNCTION: Generate Chart Data ----
+const generateChartData = (
+  inputs,
+  mortgagePayment,
+  monthlyOperatingExpenses,
+  breakEvenResult
+) => {
+  const { propertyType, monthlyRent, nightlyRate, occupancyRate } = inputs;
 
+  // Determine the "price per unit" based on property type
+  let pricePerUnit;
+  if (propertyType === "STR") {
+    // For STR, use the average nightly rate as the "price"
+    pricePerUnit = parseFloat(nightlyRate) || 0;
+  } else {
+    // For LTR, use the monthly rent as the "price"
+    pricePerUnit = parseFloat(monthlyRent) || 0;
+  }
+
+  // Get fixed costs (operating expenses + mortgage)
+  const mortgagePmt =
+    mortgagePayment.monthsInterestOnly > 0
+      ? mortgagePayment.interestOnlyPayment
+      : mortgagePayment.regularPayment;
+
+  const totalFixedCosts = monthlyOperatingExpenses.total + mortgagePmt;
+
+  // Get variable cost percentage (from operating expenses)
+  // This is a simplification - you might want a more precise calculation
+  const variableCostPercent =
+    (inputs.vacancyPercent +
+      inputs.managementFeePercent +
+      inputs.maintenanceReservePercent) /
+    100;
+  const variableCostPerUnit = pricePerUnit * variableCostPercent;
+
+  // Calculate break-even in units for the chart range
+  let breakEvenUnits = 0;
+  if (pricePerUnit > variableCostPerUnit) {
+    breakEvenUnits = totalFixedCosts / (pricePerUnit - variableCostPerUnit);
+  }
+
+  // Determine a good range for the X-axis (Quantity)
+  // Show from 0 to 50% past break-even, or a default range if breakEven is 0/infinity
+  let maxQuantity;
+  if (breakEvenUnits > 0 && isFinite(breakEvenUnits)) {
+    maxQuantity = Math.ceil(breakEvenUnits * 1.5);
+  } else {
+    maxQuantity = 20; // Default fallback
+  }
+
+  // Ensure we have at least a minimal range
+  maxQuantity = Math.max(maxQuantity, 10);
+
+  // Create data points (11 points from 0 to maxQuantity)
+  const quantityRange = Array.from({ length: 11 }, (_, i) =>
+    Math.floor((i / 10) * maxQuantity)
+  );
+
+  // Calculate data for each chart
+  const revenueData = quantityRange.map((qty) => qty * pricePerUnit);
+  const costData = quantityRange.map(
+    (qty) => totalFixedCosts + variableCostPerUnit * qty
+  );
+  const profitLossData = quantityRange.map(
+    (qty, index) => revenueData[index] - costData[index]
+  );
+
+  // For Margin of Safety (as a percentage of current sales)
+  // This shows how much sales can drop before hitting break-even
+  const marginOfSafetyData = quantityRange.map((qty) => {
+    const salesAtQty = qty * pricePerUnit;
+    if (salesAtQty > breakEvenResult.breakEvenRevenue) {
+      return (
+        ((salesAtQty - breakEvenResult.breakEvenRevenue) / salesAtQty) * 100
+      );
+    }
+    return 0;
+  });
+
+  return {
+    quantityRange, // The X-axis values [0, 15, 30, ...]
+    revenueData, // The Y-values for Revenue line
+    costData, // The Y-values for Cost line
+    profitLossData, // The Y-values for Profit/Loss line
+    marginOfSafetyData, // The Y-values for Margin of Safety bars
+    breakEvenPoint: {
+      // The coordinates of the break-even point for the chart
+      x: breakEvenUnits,
+      y: breakEvenResult.breakEvenRevenue,
+    },
+  };
+};
+
+// ---- Existing Helper Functions (NO CHANGES NEEDED BELOW) ----
 const calculateTotalUpfrontCosts = (inputs) => {
   const {
     downPayment,
