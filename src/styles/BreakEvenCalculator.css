@@ -180,6 +180,9 @@
 /* =============== */
 /*  Buttons        */
 /* =============== */
+/* =============== */
+/*  Buttons        */
+/* =============== */
 .submit-button {
   background: var(--primary);
   color: white;
@@ -199,6 +202,42 @@
 
 .submit-button:active {
   transform: translateY(0);
+}
+
+/* New styles for all other buttons to match submit button */
+.be-btn,
+.be-btn-spacing {
+  background: var(--primary);
+  color: white;
+  font-weight: 600;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.25s ease, transform 0.15s ease;
+  font-size: 0.9rem;
+}
+
+.be-btn:hover,
+.be-btn-spacing:hover {
+  background: #0056b3;
+  transform: translateY(-2px);
+}
+
+.be-btn:active,
+.be-btn-spacing:active {
+  transform: translateY(0);
+}
+
+/* Specific spacing for certain buttons */
+.be-btn-spacing {
+  margin-left: 17px;
+  margin-top: 10px;
+}
+
+/* Style for range slider thumbs to match button theme */
+input[type="range"] {
+  accent-color: var(--primary);
 }
 
 /* =============== */
