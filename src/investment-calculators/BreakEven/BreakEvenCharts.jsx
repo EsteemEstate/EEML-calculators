@@ -29,27 +29,54 @@ const BreakEvenCharts = ({ data }) => {
     }).format(value);
 
   const formatPercent = (value) =>
-    typeof value === "number" ? `${value.toFixed(2)}%` : "0.00%"; // Changed to 2 decimal places
+    typeof value === "number" ? `${value.toFixed(2)}%` : "0.00%";
 
-  // Classic Break-Even Chart Data
+  // Classic Break-Even Chart Data - FIXED VERSION
   const breakEvenData = {
-    labels: quantityRange.map((qty) => qty.toString()),
     datasets: [
       {
         label: "Total Revenue",
-        data: revenueData,
+        data: quantityRange.map((q, i) => ({ x: q, y: revenueData[i] })),
         borderColor: "rgba(75, 192, 192, 1)",
         backgroundColor: "rgba(75, 192, 192, 0.2)",
         fill: false,
-        tension: 0.1,
+        tension: 0.4,
+        datalabels: {
+          color: "rgba(75, 192, 192, 1)",
+          anchor: "end",
+          align: "top",
+          formatter: (value) =>
+            value.y === 0 ? null : formatCurrency(value.y),
+          font: {
+            weight: "bold",
+            size: 10,
+          },
+          display: (context) => {
+            return context.dataIndex % 3 === 0 ? "auto" : false;
+          },
+        },
       },
       {
         label: "Total Costs",
-        data: costData,
+        data: quantityRange.map((q, i) => ({ x: q, y: costData[i] })),
         borderColor: "rgba(255, 99, 132, 1)",
         backgroundColor: "rgba(255, 99, 132, 0.2)",
         fill: false,
-        tension: 0.1,
+        tension: 0.4,
+        datalabels: {
+          color: "rgba(255, 99, 132, 1)",
+          anchor: "start",
+          align: "bottom",
+          formatter: (value) =>
+            value.y === 0 ? null : formatCurrency(value.y),
+          font: {
+            weight: "bold",
+            size: 10,
+          },
+          display: (context) => {
+            return context.dataIndex % 3 === 0 ? "auto" : false;
+          },
+        },
       },
       {
         label: "Break-Even Point",
@@ -64,6 +91,19 @@ const BreakEvenCharts = ({ data }) => {
         pointHoverRadius: 8,
         showLine: false,
         type: "scatter",
+        datalabels: {
+          color: "rgba(255, 140, 0, 1)",
+          anchor: "center",
+          align: "bottom",
+          formatter: () => "Break-Even",
+          font: {
+            weight: "bold",
+            size: 11,
+          },
+          padding: {
+            top: 10,
+          },
+        },
       },
     ],
   };
@@ -86,9 +126,9 @@ const BreakEvenCharts = ({ data }) => {
             0,
             chartArea.top
           );
-          gradient.addColorStop(0, "rgba(255, 99, 132, 0.5)"); // Red at bottom
-          gradient.addColorStop(0.5, "rgba(255, 255, 255, 0.5)"); // White in middle
-          gradient.addColorStop(1, "rgba(75, 192, 192, 0.5)"); // Green at top
+          gradient.addColorStop(0, "rgba(255, 99, 132, 0.5)");
+          gradient.addColorStop(0.5, "rgba(255, 255, 255, 0.5)");
+          gradient.addColorStop(1, "rgba(75, 192, 192, 0.5)");
           return gradient;
         },
         fill: true,
@@ -131,38 +171,167 @@ const BreakEvenCharts = ({ data }) => {
           backgroundColor: "#fff",
         }}
       >
-        <h3>Classic Break-Even Chart</h3>
-        <div style={{ height: "300px" }}>
+        <h3
+          style={{ marginBottom: "20px", color: "#2c3e50", fontSize: "1.2rem" }}
+        >
+          Classic Break-Even Chart
+        </h3>
+        <div style={{ height: "350px" }}>
           <Line
             data={breakEvenData}
             options={{
               responsive: true,
               maintainAspectRatio: false,
+              layout: {
+                padding: {
+                  top: 40,
+                  right: 20,
+                  bottom: 20,
+                  left: 20,
+                },
+              },
               plugins: {
-                tooltip: {
-                  callbacks: {
-                    label: (context) =>
-                      `${context.dataset.label}: ${formatCurrency(
-                        context.raw
-                      )}`,
+                legend: {
+                  position: "top",
+                  labels: {
+                    boxWidth: 15,
+                    padding: 15,
+                    font: {
+                      size: 12,
+                      weight: "bold",
+                    },
                   },
+                },
+                tooltip: {
+                  backgroundColor: "rgba(0, 0, 0, 0.8)",
+                  padding: 12,
+                  titleFont: {
+                    size: 13,
+                    weight: "bold",
+                  },
+                  bodyFont: {
+                    size: 13,
+                  },
+                  callbacks: {
+                    label: (context) => {
+                      if (context.dataset.label === "Break-Even Point") {
+                        return `Break-Even: ${formatCurrency(
+                          context.raw.y
+                        )} at ${Math.round(context.raw.x)} units`;
+                      }
+                      return `${context.dataset.label}: ${formatCurrency(
+                        context.raw.y
+                      )}`;
+                    },
+                    title: (context) => {
+                      if (context[0].dataset.label === "Break-Even Point") {
+                        return `Break-Even Point`;
+                      }
+                      return `Quantity: ${Math.round(context[0].raw.x)} units`;
+                    },
+                  },
+                },
+                datalabels: {
+                  color: "#333",
+                  font: {
+                    weight: "bold",
+                    size: 10,
+                  },
+                  padding: 4,
+                  textAlign: "center",
+                  clip: false,
                 },
               },
               scales: {
                 y: {
                   beginAtZero: true,
+                  grid: {
+                    color: "rgba(0, 0, 0, 0.1)",
+                    drawBorder: false,
+                  },
                   ticks: {
                     callback: (value) => formatCurrency(value),
+                    font: {
+                      size: 11,
+                    },
+                    padding: 8,
+                    maxTicksLimit: 8,
                   },
-                  title: { display: true, text: "Amount ($)" },
+                  title: {
+                    display: true,
+                    text: "Amount ($)",
+                    font: {
+                      size: 12,
+                      weight: "bold",
+                    },
+                    padding: { bottom: 10 },
+                  },
                 },
                 x: {
-                  title: { display: true, text: "Quantity (Units)" },
+                  type: "linear", // CRITICAL: Change to linear scale for proper scatter positioning
+                  grid: {
+                    color: "rgba(0, 0, 0, 0.1)",
+                    drawBorder: false,
+                  },
+                  ticks: {
+                    autoSkip: true,
+                    maxTicksLimit: 10,
+                    maxRotation: 0,
+                    font: {
+                      size: 11,
+                    },
+                    padding: 8,
+                    callback: function (value) {
+                      return Math.round(value); // Show rounded values for x-axis
+                    },
+                  },
+                  title: {
+                    display: true,
+                    text: "Quantity (Units)",
+                    font: {
+                      size: 12,
+                      weight: "bold",
+                    },
+                    padding: { top: 10 },
+                  },
                 },
+              },
+              elements: {
+                line: {
+                  tension: 0.4,
+                  borderWidth: 2.5,
+                },
+                point: {
+                  radius: 3,
+                  hoverRadius: 6,
+                  borderWidth: 2,
+                },
+              },
+              interaction: {
+                intersect: false,
+                mode: "index",
               },
             }}
           />
         </div>
+        {data.chartData.breakEvenPoint &&
+          data.chartData.breakEvenPoint.x > 0 && (
+            <div
+              style={{
+                marginTop: "10px",
+                padding: "8px 12px",
+                backgroundColor: "#fff3cd",
+                border: "1px solid #ffeaa7",
+                borderRadius: "4px",
+                fontSize: "12px",
+                color: "#856404",
+              }}
+            >
+              <strong>Break-even:</strong>{" "}
+              {Math.round(data.chartData.breakEvenPoint.x)} units at{" "}
+              {formatCurrency(data.chartData.breakEvenPoint.y)}
+            </div>
+          )}
       </div>
 
       {/* Profit/Loss vs. Quantity Chart */}
@@ -177,7 +346,6 @@ const BreakEvenCharts = ({ data }) => {
       >
         <h3>Profit/Loss vs. Quantity</h3>
         <div style={{ height: "300px" }}>
-          // Profit/Loss vs. Quantity Chart
           <Line
             data={profitLossChartData}
             options={{
@@ -202,7 +370,7 @@ const BreakEvenCharts = ({ data }) => {
                   anchor: "end",
                   align: "top",
                   formatter: (value) =>
-                    value === 0 ? null : formatCurrency(value), // 👈 hide zeros
+                    value === 0 ? null : formatCurrency(value),
                   font: {
                     weight: "bold",
                     size: 12,
@@ -237,7 +405,6 @@ const BreakEvenCharts = ({ data }) => {
       >
         <h3>Margin of Safety</h3>
         <div style={{ height: "300px" }}>
-          // Margin of Safety Chart
           <Bar
             data={marginOfSafetyChartData}
             options={{
@@ -254,7 +421,7 @@ const BreakEvenCharts = ({ data }) => {
                   anchor: "end",
                   align: "top",
                   formatter: (value) =>
-                    value === 0 ? null : `${value.toFixed(2)}%`, // 👈 hide zeros
+                    value === 0 ? null : `${value.toFixed(2)}%`,
                   font: {
                     weight: "bold",
                     size: 12,
