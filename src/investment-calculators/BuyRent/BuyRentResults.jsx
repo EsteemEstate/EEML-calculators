@@ -104,6 +104,7 @@ function BuyRentResults({ data }) {
         className={`investment-health ${isPositive ? "positive" : "negative"}`}
       >
         <h3>Verdict</h3>
+
         {isPositive ? (
           <p>Buying leads to higher long-term wealth.</p>
         ) : (

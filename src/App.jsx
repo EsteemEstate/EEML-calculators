@@ -5,7 +5,8 @@ import RentalYieldCalculatorPage from "./investment-calculators/RentalYield/Rent
 import CapRateCalculatorPage from "./investment-calculators/CapRate/CapRateCalculatorPage";
 import BECalculatorPage from "./investment-calculators/BreakEven/BECalculatorPage";
 import FlipProfitCalculatorPage from "./investment-calculators/FlipProfit/FlipProfitCalculatorPage";
-import BuyRentCalculatorPage from "./investment-calculators/BuyRent/BuyRentCalculatorPage"; // ✅ New import
+import BuyRentCalculatorPage from "./investment-calculators/BuyRent/BuyRentCalculatorPage";
+import HoldingCostCalculatorPage from "./investment-calculators/HoldingCost/HoldingCostCalculatorPage"; // ✅ New import
 import "./App.css";
 
 function App() {
@@ -39,6 +40,10 @@ function App() {
           <span className="nav-divider">|</span>
           <Link to="/buy-vs-rent" className="nav-link">
             Buy vs Rent Calculator
+          </Link>
+          <span className="nav-divider">|</span>
+          <Link to="/holding-cost" className="nav-link">
+            Holding Cost Calculator
           </Link>{" "}
           {/* ✅ New link */}
         </nav>
@@ -65,6 +70,11 @@ function App() {
             <Route path="/break-even" element={<BECalculatorPage />} />
             <Route path="/flip-profit" element={<FlipProfitCalculatorPage />} />
             <Route path="/buy-vs-rent" element={<BuyRentCalculatorPage />} />
+            <Route
+              path="/holding-cost"
+              element={<HoldingCostCalculatorPage />}
+            />{" "}
+            {/* ✅ New route */}
           </Routes>
         </main>
 

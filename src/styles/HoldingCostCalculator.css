@@ -1,0 +1,7 @@
+.divider-line {
+  width: 100%;
+  height: 1px;
+  background-color: #4b5563; /* gray */
+  margin: 0.5rem 0;
+  border: none;
+}
