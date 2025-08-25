@@ -110,7 +110,7 @@ function HoldingCostResults({ results, currency = "USD" }) {
 
       {/* Charts */}
       <div className="charts">
-        <HoldingCostCharts data={results} />
+        <HoldingCostCharts results={results} />
       </div>
     </div>
   );
