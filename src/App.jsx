@@ -6,7 +6,8 @@ import CapRateCalculatorPage from "./investment-calculators/CapRate/CapRateCalcu
 import BECalculatorPage from "./investment-calculators/BreakEven/BECalculatorPage";
 import FlipProfitCalculatorPage from "./investment-calculators/FlipProfit/FlipProfitCalculatorPage";
 import BuyRentCalculatorPage from "./investment-calculators/BuyRent/BuyRentCalculatorPage";
-import HoldingCostCalculatorPage from "./investment-calculators/HoldingCost/HoldingCostCalculatorPage"; // ✅ New import
+import HoldingCostCalculatorPage from "./investment-calculators/HoldingCost/HoldingCostCalculatorPage";
+import EquityGrowthCalculatorPage from "./investment-calculators/EquityGrowth/EquityGrowthCalculatorPage"; // ✅ Import new page
 import "./App.css";
 
 function App() {
@@ -44,6 +45,10 @@ function App() {
           <span className="nav-divider">|</span>
           <Link to="/holding-cost" className="nav-link">
             Holding Cost Calculator
+          </Link>
+          <span className="nav-divider">|</span>
+          <Link to="/equity-growth" className="nav-link">
+            Equity Growth Calculator
           </Link>{" "}
           {/* ✅ New link */}
         </nav>
@@ -73,6 +78,10 @@ function App() {
             <Route
               path="/holding-cost"
               element={<HoldingCostCalculatorPage />}
+            />
+            <Route
+              path="/equity-growth"
+              element={<EquityGrowthCalculatorPage />}
             />{" "}
             {/* ✅ New route */}
           </Routes>

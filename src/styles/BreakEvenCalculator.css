@@ -166,17 +166,6 @@
   font-size: 1.2rem;
 }
 
-/* Chart accents */
-.chart-container:nth-child(1) {
-  border-left: 4px solid #3b82f6;
-}
-.chart-container:nth-child(2) {
-  border-left: 4px solid #10b981;
-}
-.chart-container:nth-child(3) {
-  border-left: 4px solid #f59e0b;
-}
-
 /* =============== */
 /*  Buttons        */
 /* =============== */
