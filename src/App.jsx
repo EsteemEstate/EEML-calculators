@@ -7,7 +7,9 @@ import BECalculatorPage from "./investment-calculators/BreakEven/BECalculatorPag
 import FlipProfitCalculatorPage from "./investment-calculators/FlipProfit/FlipProfitCalculatorPage";
 import BuyRentCalculatorPage from "./investment-calculators/BuyRent/BuyRentCalculatorPage";
 import HoldingCostCalculatorPage from "./investment-calculators/HoldingCost/HoldingCostCalculatorPage";
-import EquityGrowthCalculatorPage from "./investment-calculators/EquityGrowth/EquityGrowthCalculatorPage"; // ✅ Import new page
+import EquityGrowthCalculatorPage from "./investment-calculators/EquityGrowth/EquityGrowthCalculatorPage";
+import PortfolioAnalyzerPage from "./investment-calculators/PortfolioAnalyzer/PortfolioAnalyzerPage";
+
 import "./App.css";
 
 function App() {
@@ -50,7 +52,9 @@ function App() {
           <Link to="/equity-growth" className="nav-link">
             Equity Growth Calculator
           </Link>{" "}
-          {/* ✅ New link */}
+          <Link to="/portfolio-analyzer" className="nav-link">
+            Portfolio Analyzer
+          </Link>
         </nav>
 
         <main className="main-content">
@@ -83,7 +87,10 @@ function App() {
               path="/equity-growth"
               element={<EquityGrowthCalculatorPage />}
             />{" "}
-            {/* ✅ New route */}
+            <Route
+              path="/portfolio-analyzer"
+              element={<PortfolioAnalyzerPage />}
+            />
           </Routes>
         </main>
 
