@@ -15,61 +15,60 @@ const SectionTitleWithTooltip = ({ title, description }) => (
 function EquityGrowthForm({ setResults }) {
   const [inputs, setInputs] = useState({
     // Global / Scenario
-    scenarioLabel: "A",
-    currency: "USD",
+    scenarioLabel: "",
+    currency: "",
     locale: "en-US",
-    startDate: new Date().toISOString().split("T")[0],
-    projectionHorizonYears: 10,
-    compounding: "monthly",
-    inflation: 0.02,
-    discountRate: 0.05,
+    startDate: "",
+    projectionHorizonYears: "",
+    compounding: "",
+    inflation: "",
+    discountRate: "",
     monteCarloEnabled: false,
-    monteCarloRuns: 1000,
-    monteCarloSeed: 42,
-    monteCarloVolatility: 0.03,
-    monteCarloMean: 0.03,
+    monteCarloRuns: "",
+    monteCarloSeed: "",
+    monteCarloVolatility: "",
+    monteCarloMean: "",
 
     // Property & Market
-    homePrice: 350000,
-    downPayment: 70000,
-    appreciation: 0.03,
+    homePrice: "",
+    downPayment: "",
+    appreciation: "",
     renoEvents: [],
 
     // Financing
-    mortgagePrincipal: 280000,
-    mortgageRate: 0.05,
-    mortgageTermMonths: 360,
-    amortizationType: "standard",
-    points: 0,
-    closingCosts: 5000,
+    mortgagePrincipal: "",
+    mortgageRate: "",
+    mortgageTermMonths: "",
+    amortizationType: "",
+    points: "",
+    closingCosts: "",
     extraPrincipalSchedule: [],
-    pmiEnabled: true,
-    pmiPercent: 0.01,
-    pmiStopLTV: 0.8,
+    pmiEnabled: false,
+    pmiPercent: "",
+    pmiStopLTV: "",
     refinanceEvents: [],
     secondaryLien: [],
 
     // Carrying costs
-    propertyTax: 0.012,
-    insurance: 1200,
-    hoaFee: 200,
-    maintenancePercent: 0.01,
-    vacancyAllowance: 0.05,
+    propertyTax: "",
+    insurance: "",
+    hoaFee: "",
+    maintenancePercent: "",
+    vacancyAllowance: "",
 
     // Sale / Exit
-    targetSaleDate: new Date(
-      new Date().setFullYear(new Date().getFullYear() + 10)
-    )
-      .toISOString()
-      .split("T")[0],
-    sellingCostsPercent: 0.06,
-    capitalGainsRate: 0.15,
-    depreciationRecapture: 0,
+    targetSaleDate: "",
+    sellingCostsPercent: "",
+    capitalGainsRate: "",
+    depreciationRecapture: "",
 
     // UX / Output options
-    granularity: "annual",
-    showMCPercentiles: true,
-    nominalVsReal: "nominal",
+    granularity: "",
+    showMCPercentiles: false,
+    nominalVsReal: "",
+    exportCSV: false,
+    exportPDF: false,
+    shareLink: false,
   });
 
   const handleChange = (e) => {

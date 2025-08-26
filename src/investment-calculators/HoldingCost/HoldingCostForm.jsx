@@ -15,37 +15,37 @@ const SectionTitleWithTooltip = ({ title, description }) => (
 // Default placeholder inputs
 const initialInputs = {
   // A) Property & Financing
-  purchasePrice: 350000,
-  loanAmount: 280000,
-  mortgageRate: 0.05,
-  loanTerm: 30,
+  purchasePrice: "",
+  loanAmount: "",
+  mortgageRate: "",
+  loanTerm: "",
   monthlyPI: "",
 
   // B) Fixed Ownership Costs
-  propertyTax: 0.012, // % of home value or fixed
-  insurance: 1200,
-  hoaFee: 200,
-  maintenance: 250, // monthly
-  utilities: 300,
-  securityLandscaping: 0,
+  propertyTax: "",
+  insurance: "",
+  hoaFee: "",
+  maintenance: "",
+  utilities: "",
+  securityLandscaping: "",
 
   // C) Transaction / Opportunity Costs
-  closingCosts: 5000,
-  stampDuty: 7000,
-  opportunityCost: 0.06, // % return on equity
+  closingCosts: "",
+  stampDuty: "",
+  opportunityCost: "",
 
   // D) Revenue Offsets
-  rentalIncome: 0,
-  vacancyRate: 0,
-  taxDeductions: false,
+  rentalIncome: "",
+  vacancyRate: "",
+  taxDeductions: false, // keep boolean
 
   // E) Locale & Currency
-  country: "US",
-  currency: "USD",
-  exchangeRate: 1.0,
+  country: "",
+  currency: "",
+  exchangeRate: "",
 
   // Dev toggles
-  dataExport: false,
+  dataExport: false, // keep boolean
 };
 
 function HoldingCostForm({ setResults }) {

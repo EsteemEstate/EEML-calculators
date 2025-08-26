@@ -15,35 +15,35 @@ const SectionTitleWithTooltip = ({ title, description }) => (
 // Initial placeholder data
 const initialPlaceholderData = {
   // Buying
-  homePrice: 350000, // $350,000
-  downPayment: 70000, // $70,000 (20%)
-  loanTerm: 30, // 30 years
-  interestRate: 0.05, // 5% annual
-  propertyTax: 0.012, // 1.2% of home value per year
-  insurance: 1200, // $1,200/year
-  maintenancePercent: 0.01, // 1% of home value per year
-  hoaFee: 200, // $200/month
-  closingCosts: 5000, // $5,000 upfront
+  homePrice: "",
+  downPayment: "",
+  loanTerm: "",
+  interestRate: "",
+  propertyTax: "",
+  insurance: "",
+  maintenancePercent: "",
+  hoaFee: "",
+  closingCosts: "",
 
   // Renting
-  monthlyRent: 1800, // $1,800/month
-  rentIncreasePercent: 0.03, // 3% per year
-  renterInsurance: 200, // $200/year
+  monthlyRent: "",
+  rentIncreasePercent: "",
+  renterInsurance: "",
 
   // Shared / Market
-  annualHomeAppreciation: 0.03, // 3% per year
-  annualInvestmentReturn: 0.07, // 7% per year
-  timeHorizonYears: 10, // 10 years
+  annualHomeAppreciation: "",
+  annualInvestmentReturn: "",
+  timeHorizonYears: "",
 
   // Scenario Adjustments
-  inflationRate: 0.02, // 2% per year
-  rentAdjustment: 0, // +0% adjustment
-  homeValueAdjustment: 0, // +0% adjustment
+  inflationRate: "",
+  rentAdjustment: "",
+  homeValueAdjustment: "",
 
   // Dev / UI
-  currency: "USD",
-  unitSystem: "Imperial",
-  dataExport: false,
+  currency: "",
+  unitSystem: "",
+  dataExport: "",
 };
 
 function BuyRentForm({ setResults }) {
