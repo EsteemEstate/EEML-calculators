@@ -1,6 +1,19 @@
 // PortfolioResults.jsx
 import React from "react";
 import PortfolioCharts from "./PortfolioCharts";
+import {
+  equity,
+  netCashflow,
+  capRate,
+  dscr,
+  totalPortfolioValue,
+  totalEquity,
+  portfolioNOI,
+  cashOnCashReturn,
+  portfolioCapRate,
+  portfolioIRR,
+  portfolioRiskSensitivity,
+} from "../../Utils/PortfolioFormulas"; // updated import
 
 function PortfolioResults({ data }) {
   if (!data || !data.properties || data.properties.length === 0) {
@@ -11,18 +24,20 @@ function PortfolioResults({ data }) {
     );
   }
 
-  const {
-    properties,
-    totalPortfolioValue,
-    totalEquity,
-    totalNOI,
-    cashOnCashReturn,
-    avgCapRate,
-    irr,
-    dscr,
-    riskConcentration,
-    currency,
-  } = data;
+  const { properties, currency } = data;
+
+  // Compute portfolio-level metrics using formulas
+  const totalValue = totalPortfolioValue(properties);
+  const totalEq = totalEquity(properties);
+  const totalNOIValue = portfolioNOI(properties);
+  const cashOnCash = cashOnCashReturn(properties);
+  const avgCap = portfolioCapRate(properties);
+  const irrValue = portfolioIRR(properties);
+
+  // Compute portfolio-level DSCR as weighted average
+  const portfolioDSCR =
+    properties.reduce((sum, p) => sum + dscr(p) * (p.currentValue || 0), 0) /
+    totalValue;
 
   const formatCurrency = (value) =>
     typeof value === "number"
@@ -42,35 +57,33 @@ function PortfolioResults({ data }) {
       <div className="metrics-cards">
         <div className="metric-card">
           <span className="metric-label">Total Portfolio Value</span>
-          <span className="metric-value">
-            {formatCurrency(totalPortfolioValue)}
-          </span>
+          <span className="metric-value">{formatCurrency(totalValue)}</span>
         </div>
         <div className="metric-card">
           <span className="metric-label">Total Equity</span>
-          <span className="metric-value">{formatCurrency(totalEquity)}</span>
+          <span className="metric-value">{formatCurrency(totalEq)}</span>
         </div>
         <div className="metric-card">
           <span className="metric-label">Total NOI</span>
-          <span className="metric-value">{formatCurrency(totalNOI)}</span>
+          <span className="metric-value">{formatCurrency(totalNOIValue)}</span>
         </div>
         <div className="metric-card">
           <span className="metric-label">Cash-on-Cash Return</span>
-          <span className="metric-value">
-            {(cashOnCashReturn * 100).toFixed(2)}%
-          </span>
+          <span className="metric-value">{(cashOnCash * 100).toFixed(2)}%</span>
         </div>
         <div className="metric-card">
           <span className="metric-label">Average Cap Rate</span>
-          <span className="metric-value">{(avgCapRate * 100).toFixed(2)}%</span>
+          <span className="metric-value">{(avgCap * 100).toFixed(2)}%</span>
         </div>
         <div className="metric-card">
           <span className="metric-label">Portfolio IRR</span>
-          <span className="metric-value">{(irr * 100).toFixed(2)}%</span>
+          <span className="metric-value">{(irrValue * 100).toFixed(2)}%</span>
         </div>
         <div className="metric-card">
           <span className="metric-label">DSCR</span>
-          <span className="metric-value">{dscr?.toFixed(2) || "N/A"}</span>
+          <span className="metric-value">
+            {portfolioDSCR?.toFixed(2) || "N/A"}
+          </span>
         </div>
       </div>
 
@@ -79,29 +92,29 @@ function PortfolioResults({ data }) {
         <h3>Property-Level Metrics</h3>
         {properties.map((prop, idx) => (
           <div className="property-metrics" key={idx}>
-            <h4>{prop.name}</h4>
+            <h4>{prop.name || `Property ${idx + 1}`}</h4>
             <div className="result-row">
               <span className="result-label">Equity:</span>
               <span className="result-value">
-                {formatCurrency(prop.equity)}
+                {formatCurrency(equity(prop))}
               </span>
             </div>
             <div className="result-row">
               <span className="result-label">Net Cashflow:</span>
               <span className="result-value">
-                {formatCurrency(prop.netCashflow)}
+                {formatCurrency(netCashflow(prop))}
               </span>
             </div>
             <div className="result-row">
               <span className="result-label">Cap Rate:</span>
               <span className="result-value">
-                {(prop.capRate * 100).toFixed(2)}%
+                {(capRate(prop) * 100).toFixed(2)}%
               </span>
             </div>
             <div className="result-row">
               <span className="result-label">DSCR:</span>
               <span className="result-value">
-                {prop.dscr?.toFixed(2) || "N/A"}
+                {dscr(prop)?.toFixed(2) || "N/A"}
               </span>
             </div>
           </div>
@@ -127,7 +140,13 @@ function PortfolioResults({ data }) {
 
         <div className="chart-container">
           <h3>Risk Sensitivity Tornado</h3>
-          <PortfolioCharts type="riskTornado" data={data} />
+          <PortfolioCharts
+            type="riskTornado"
+            data={{
+              ...data,
+              riskSensitivity: portfolioRiskSensitivity(properties),
+            }}
+          />
         </div>
 
         <div className="chart-container">

@@ -28,6 +28,8 @@ ChartJS.register(
   ChartDataLabels
 );
 
+import { equity } from "../../Utils/PortfolioFormulas";
+
 function PortfolioCharts({ type, data }) {
   if (!data) return null;
 
@@ -81,7 +83,10 @@ function PortfolioCharts({ type, data }) {
           }}
           options={{
             responsive: true,
-            plugins: { legend: { position: "top" } },
+            plugins: {
+              legend: { position: "top" },
+              datalabels: { display: false },
+            },
           }}
         />
       );
@@ -89,27 +94,30 @@ function PortfolioCharts({ type, data }) {
 
     // 2. Property Type Allocation (Pie)
     case "propertyTypeAllocation": {
-      const typeCounts = {};
+      const typeValues = {};
       properties.forEach((p) => {
-        typeCounts[p.type] = (typeCounts[p.type] || 0) + (p.currentValue || 0);
+        typeValues[p.type] = (typeValues[p.type] || 0) + (p.currentValue || 0);
       });
+
       return (
         <Pie
           data={{
-            labels: Object.keys(typeCounts),
+            labels: Object.keys(typeValues),
             datasets: [
               {
-                data: Object.values(typeCounts),
+                data: Object.values(typeValues),
                 backgroundColor: ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728"],
               },
             ],
           }}
           options={{
+            responsive: true,
             plugins: {
               legend: { position: "right" },
-              datalabels: { formatter: (val) => `${Math.round(val)}$` },
+              datalabels: {
+                formatter: (val) => `${formatCurrency(val)}`,
+              },
             },
-            responsive: true,
           }}
         />
       );
@@ -125,7 +133,9 @@ function PortfolioCharts({ type, data }) {
             datasets: properties.map((p, idx) => ({
               label: p.name,
               data:
-                portfolioTimeline?.map((year) => year.cashflows[p.name]) || [],
+                portfolioTimeline?.map(
+                  (year) => year.cashflows?.[p.name] || 0
+                ) || [],
               backgroundColor: `rgba(${(idx * 70) % 255}, ${
                 (idx * 130) % 255
               }, ${(idx * 200) % 255}, 0.7)`,
@@ -171,7 +181,8 @@ function PortfolioCharts({ type, data }) {
     // 5. Property Contribution to Equity
     case "equityContribution": {
       const labels = properties.map((p) => p.name);
-      const dataSet = properties.map((p) => p.equity || 0);
+      const dataSet = properties.map((p) => equity(p));
+
       return (
         <Bar
           data={{

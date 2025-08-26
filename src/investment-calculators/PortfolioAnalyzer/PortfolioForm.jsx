@@ -14,71 +14,103 @@ const SectionTitleWithTooltip = ({ title, description }) => (
 
 function PortfolioForm({ setResults }) {
   const [inputs, setInputs] = useState({
-    // Portfolio / Scenario
-    portfolioName: "",
+    portfolioName: "Sample Portfolio",
     scenarioLabel: "Scenario A",
-    currency: "TT$",
+    currency: "TTD",
     inflation: 2.0,
     projectionHorizonYears: 10,
-    targetWealthGoal: "",
-    targetIncomeGoal: "",
-
-    // Properties Array
-    properties: [],
-
-    // Portfolio Output / UX options
+    targetWealthGoal: 1000000,
+    targetIncomeGoal: 50000,
     granularity: "annual",
     currencyType: "nominal",
     exportCSV: false,
     exportPDF: false,
     shareLink: false,
     showMonteCarlo: false,
+
+    properties: [
+      {
+        name: "Downtown Condo",
+        type: "residential",
+        purchasePrice: 500000,
+        currentValue: 520000,
+        location: "Port of Spain",
+        loanAmount: 350000,
+        loanBalance: 340000,
+        interestRate: 5,
+        termMonths: 360,
+        amortizationType: "fixed",
+        closingCosts: 5000,
+        points: 0,
+        refinanceOptions: [],
+        rent: 3000,
+        vacancyRate: 5,
+        rentGrowth: 3,
+        operatingExpenses: {
+          propertyTax: 1.2,
+          insurance: 1200,
+          hoa: 200,
+          utilities: 100,
+          maintenance: 1,
+          managementFeesPercent: 5,
+          other: 50,
+        },
+        monthlyPI: 2000,
+        horizonYears: 10,
+        appreciation: 3,
+        nightlyRate: 0,
+        occupancyRate: 0,
+        seasonalVariation: 0,
+        annualLeaseAmount: 0,
+        escalationClause: 0,
+        renovations: [],
+        saleAssumptions: {
+          exitYear: new Date().getFullYear() + 5,
+          sellingCostsPercent: 6,
+        },
+      },
+      {
+        name: "Suburban House",
+        type: "residential",
+        purchasePrice: 400000,
+        currentValue: 410000,
+        location: "Chaguanas",
+        loanAmount: 250000,
+        loanBalance: 245000,
+        interestRate: 4.5,
+        termMonths: 360,
+        amortizationType: "fixed",
+        closingCosts: 4000,
+        points: 0,
+        refinanceOptions: [],
+        rent: 2500,
+        vacancyRate: 5,
+        rentGrowth: 2,
+        operatingExpenses: {
+          propertyTax: 1,
+          insurance: 1000,
+          hoa: 0,
+          utilities: 150,
+          maintenance: 1,
+          managementFeesPercent: 5,
+          other: 50,
+        },
+        monthlyPI: 1500,
+        horizonYears: 10,
+        appreciation: 2,
+        nightlyRate: 0,
+        occupancyRate: 0,
+        seasonalVariation: 0,
+        annualLeaseAmount: 0,
+        escalationClause: 0,
+        renovations: [],
+        saleAssumptions: {
+          exitYear: new Date().getFullYear() + 5,
+          sellingCostsPercent: 6,
+        },
+      },
+    ],
   });
-
-  // Property template
-  const emptyProperty = {
-    name: "",
-    type: "residential",
-    purchasePrice: "",
-    purchaseDate: new Date().toISOString().split("T")[0],
-    currentMarketValue: "",
-    location: "",
-
-    // Financing
-    loanAmount: "",
-    interestRate: "",
-    termMonths: 360,
-    amortizationType: "fixed",
-    closingCosts: 0,
-    points: 0,
-    refinanceOptions: [],
-
-    // Income & Cashflow
-    rent: "",
-    vacancyRate: 5,
-    rentGrowth: 3,
-    nightlyRate: "",
-    occupancyRate: 65,
-    seasonalVariation: 0,
-    annualLeaseAmount: "",
-    escalationClause: 0,
-    operatingExpenses: {
-      propertyTax: 0,
-      insurance: 0,
-      hoa: 0,
-      utilities: 0,
-      maintenance: 0,
-      managementFeesPercent: 0,
-      other: 0,
-    },
-
-    // Other Events
-    renovations: [],
-    saleAssumptions: {
-      exitYear: new Date().getFullYear() + 5,
-      sellingCostsPercent: 6,
-    },
-  };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
