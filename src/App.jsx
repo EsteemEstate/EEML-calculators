@@ -9,6 +9,7 @@ import BuyRentCalculatorPage from "./investment-calculators/BuyRent/BuyRentCalcu
 import HoldingCostCalculatorPage from "./investment-calculators/HoldingCost/HoldingCostCalculatorPage";
 import EquityGrowthCalculatorPage from "./investment-calculators/EquityGrowth/EquityGrowthCalculatorPage";
 import PortfolioAnalyzerPage from "./investment-calculators/PortfolioAnalyzer/PortfolioAnalyzerPage";
+import RenovationCalculatorPage from "./investment-calculators/ReturnOnRenovation/ReturnOnRenovationCalculatorPage"; // ✅ NEW IMPORT
 
 import "./App.css";
 
@@ -51,9 +52,15 @@ function App() {
           <span className="nav-divider">|</span>
           <Link to="/equity-growth" className="nav-link">
             Equity Growth Calculator
-          </Link>{" "}
+          </Link>
+
+          <span className="nav-divider">|</span>
           <Link to="/portfolio-analyzer" className="nav-link">
             Portfolio Analyzer
+          </Link>
+          <span className="nav-divider">|</span>
+          <Link to="/renovation" className="nav-link">
+            Renovation ROI Calculator
           </Link>
         </nav>
 
@@ -86,7 +93,9 @@ function App() {
             <Route
               path="/equity-growth"
               element={<EquityGrowthCalculatorPage />}
-            />{" "}
+            />
+            <Route path="/renovation" element={<RenovationCalculatorPage />} />{" "}
+            {/* ✅ NEW ROUTE */}
             <Route
               path="/portfolio-analyzer"
               element={<PortfolioAnalyzerPage />}
