@@ -1,4 +1,3 @@
-// src/investment-calculators/RenovationROI/RenovationROIResults.jsx
 import React from "react";
 import ReturnOnRenovationCharts from "./ReturnOnRenovationCharts";
 
@@ -23,6 +22,15 @@ function RenovationROIResults({ data }) {
     valuationMethods,
     breakdown,
   } = data;
+
+  // 🔹 Normalize breakdown to make sure labels/amounts exist
+  const normalizedData = {
+    ...data,
+    breakdown: (breakdown || []).map((item, index) => ({
+      label: item.label || item.name || `Item ${index + 1}`,
+      amount: item.amount ?? item.cost ?? 0,
+    })),
+  };
 
   // Format helpers
   const formatCurrency = (value) =>
@@ -140,14 +148,12 @@ function RenovationROIResults({ data }) {
       </div>
 
       {/* Cost Breakdown */}
-      {breakdown && breakdown.length > 0 && (
+      {normalizedData.breakdown.length > 0 && (
         <div className="detailed-results">
           <h3>Cost Breakdown</h3>
-          {breakdown.map((item, index) => (
+          {normalizedData.breakdown.map((item, index) => (
             <div key={index} className="result-row">
-              <span className="result-label">
-                {item.label || `Item ${index + 1}`}
-              </span>
+              <span className="result-label">{item.label}</span>
               <span className="result-value">
                 {formatCurrency(item.amount)}
               </span>
@@ -173,7 +179,7 @@ function RenovationROIResults({ data }) {
 
       {/* Charts */}
       <div className="charts">
-        <ReturnOnRenovationCharts data={data} />
+        <ReturnOnRenovationCharts data={normalizedData} />
       </div>
     </div>
   );

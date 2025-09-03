@@ -15,60 +15,66 @@ const SectionTitleWithTooltip = ({ title, description }) => (
 function EquityGrowthForm({ setResults }) {
   const [inputs, setInputs] = useState({
     // Global / Scenario
-    scenarioLabel: "",
-    currency: "",
+    scenarioLabel: "Starter Test Case",
+    currency: "USD",
     locale: "en-US",
-    startDate: "",
-    projectionHorizonYears: "",
-    compounding: "",
-    inflation: "",
-    discountRate: "",
-    monteCarloEnabled: false,
-    monteCarloRuns: "",
-    monteCarloSeed: "",
-    monteCarloVolatility: "",
-    monteCarloMean: "",
+    startDate: "2025-01-01",
+    projectionHorizonYears: 10,
+    compounding: "annual", // could be "monthly", "quarterly"
+    inflation: 0.025, // 2.5%
+    discountRate: 0.04, // 4%
+    monteCarloEnabled: true,
+    monteCarloRuns: 500,
+    monteCarloSeed: 123,
+    monteCarloVolatility: 0.12, // 12% stdev
+    monteCarloMean: 0.05, // 5% expected return
 
     // Property & Market
-    homePrice: "",
-    downPayment: "",
-    appreciation: "",
-    renoEvents: [],
+    homePrice: 350000,
+    downPayment: 70000,
+    appreciation: 0.03, // 3% annual appreciation
+    renoEvents: [
+      { year: 2, cost: 15000, valueAdded: 20000 },
+      { year: 6, cost: 10000, valueAdded: 12000 },
+    ],
 
     // Financing
-    mortgagePrincipal: "",
-    mortgageRate: "",
-    mortgageTermMonths: "",
-    amortizationType: "",
-    points: "",
-    closingCosts: "",
-    extraPrincipalSchedule: [],
-    pmiEnabled: false,
-    pmiPercent: "",
-    pmiStopLTV: "",
-    refinanceEvents: [],
-    secondaryLien: [],
+    mortgagePrincipal: 280000,
+    mortgageRate: 0.05,
+    mortgageTermMonths: 360, // 30 years
+    amortizationType: "fixed",
+    points: 1, // % of loan
+    closingCosts: 5000,
+    extraPrincipalSchedule: [
+      { month: 12, amount: 5000 },
+      { month: 60, amount: 10000 },
+    ],
+    pmiEnabled: true,
+    pmiPercent: 0.01, // 1% annually
+    pmiStopLTV: 0.78, // PMI drops when LTV < 78%
+    refinanceEvents: [{ year: 5, newRate: 0.04, newTermMonths: 300 }],
+    secondaryLien: [{ amount: 20000, rate: 0.07, termMonths: 120 }],
 
     // Carrying costs
-    propertyTax: "",
-    insurance: "",
-    hoaFee: "",
-    maintenancePercent: "",
-    vacancyAllowance: "",
+    propertyTax: 0.012, // 1.2% of home value
+    insurance: 1200, // yearly
+    hoaFee: 150, // monthly
+    maintenancePercent: 0.01, // 1% of home value per year
+    vacancyAllowance: 0.05, // 5% if rented
 
     // Sale / Exit
-    targetSaleDate: "",
-    sellingCostsPercent: "",
-    capitalGainsRate: "",
-    depreciationRecapture: "",
+    targetSaleDate: "2035-01-01",
+    sellingCostsPercent: 0.06, // realtor etc.
+    capitalGainsRate: 0.15,
+    depreciationRecapture: 0.25,
 
     // UX / Output options
-    granularity: "",
-    showMCPercentiles: false,
-    nominalVsReal: "",
-    exportCSV: false,
+    granularity: "annual", // "monthly" or "annual"
+    showMCPercentiles: true,
+    nominalVsReal: "real",
+    exportCSV: true,
     exportPDF: false,
-    shareLink: false,
+    shareLink: true,
   });
 
   const handleChange = (e) => {

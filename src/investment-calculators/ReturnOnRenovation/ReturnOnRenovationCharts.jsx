@@ -1,6 +1,5 @@
-// src/investment-calculators/Renovation/ReturnOnRenovationCharts.jsx
 import React from "react";
-import { Bar, Pie } from "react-chartjs-2";
+import { Bar, Doughnut } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -32,7 +31,7 @@ function ReturnOnRenovationCharts({ data }) {
       minimumFractionDigits: 0,
     }).format(val || 0);
 
-  // ROI Comparison Chart
+  // 1) ROI % Bar Chart
   const roiChartData = {
     labels: ["ROI (%)"],
     datasets: [
@@ -44,7 +43,7 @@ function ReturnOnRenovationCharts({ data }) {
     ],
   };
 
-  // Cost vs Value Chart
+  // 2) Cost vs Value Bar Chart
   const costValueData = {
     labels: ["Investment", "Value Added"],
     datasets: [
@@ -56,14 +55,16 @@ function ReturnOnRenovationCharts({ data }) {
     ],
   };
 
-  // Breakdown Pie Chart (if breakdown exists)
+  // 3) Cost Breakdown Donut Chart
   const breakdownData =
     data.breakdown && data.breakdown.length > 0
       ? {
-          labels: data.breakdown.map((item) => item.label || "Item"),
+          labels: data.breakdown.map(
+            (item, i) => item.label || `Item ${i + 1}`
+          ),
           datasets: [
             {
-              data: data.breakdown.map((item) => item.amount),
+              data: data.breakdown.map((item) => item.amount ?? 0),
               backgroundColor: [
                 "#f44336",
                 "#e91e63",
@@ -86,6 +87,7 @@ function ReturnOnRenovationCharts({ data }) {
         }
       : null;
 
+  // Shared chart options
   const chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
@@ -95,7 +97,7 @@ function ReturnOnRenovationCharts({ data }) {
         callbacks: {
           label: (context) => {
             const value = context.raw;
-            return context.dataset.label === "ROI (%)"
+            return context.dataset.label === "Return on Investment"
               ? `${value.toFixed(1)}%`
               : formatCurrency(value);
           },
@@ -106,20 +108,23 @@ function ReturnOnRenovationCharts({ data }) {
 
   return (
     <div className="charts-container">
+      {/* ROI % */}
       <div className="chart-wrapper">
         <h4>Return on Investment</h4>
         <Bar data={roiChartData} options={chartOptions} height={300} />
       </div>
 
+      {/* Cost vs Value */}
       <div className="chart-wrapper">
         <h4>Cost vs Value Added</h4>
         <Bar data={costValueData} options={chartOptions} height={300} />
       </div>
 
+      {/* Cost Breakdown */}
       {breakdownData && (
         <div className="chart-wrapper">
           <h4>Cost Breakdown</h4>
-          <Pie data={breakdownData} options={chartOptions} height={300} />
+          <Doughnut data={breakdownData} options={chartOptions} height={300} />
         </div>
       )}
     </div>
