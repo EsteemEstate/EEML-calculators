@@ -10,14 +10,16 @@ import HoldingCostCalculatorPage from "./investment-calculators/HoldingCost/Hold
 import EquityGrowthCalculatorPage from "./investment-calculators/EquityGrowth/EquityGrowthCalculatorPage";
 import PortfolioAnalyzerPage from "./investment-calculators/PortfolioAnalyzer/PortfolioAnalyzerPage";
 import RenovationCalculatorPage from "./investment-calculators/ReturnOnRenovation/ReturnOnRenovationCalculatorPage";
+import MortgageCalculatorPage from "./Financing & Affordability/Mortgage/MortgageCalculatorPage";
 import "./App.css";
 
 function App() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(null);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
 
-  const calculators = [
+  // 📊 Investment Calculators
+  const investmentCalculators = [
     { path: "/roi", name: "ROI Calculator" },
     { path: "/rental-yield", name: "Rental Yield Calculator" },
     { path: "/cap-rate", name: "Cap Rate Calculator" },
@@ -30,7 +32,16 @@ function App() {
     { path: "/renovation", name: "Renovation ROI Calculator" },
   ];
 
-  const filteredCalculators = calculators.filter((calc) =>
+  // 💰 Financing & Affordability Calculators
+  const financingCalculators = [
+    { path: "/mortgage", name: "Mortgage Calculator" },
+    // add more later
+  ];
+
+  // Combine for search
+  const allCalculators = [...investmentCalculators, ...financingCalculators];
+
+  const filteredCalculators = allCalculators.filter((calc) =>
     calc.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -42,24 +53,24 @@ function App() {
             Home
           </Link>
 
-          {/* Investment Calculators Dropdown */}
+          {/* 📊 Investment Calculators Dropdown */}
           <div
             className="nav-dropdown"
-            onMouseEnter={() => setIsDropdownOpen(true)}
-            onMouseLeave={() => setIsDropdownOpen(false)}
+            onMouseEnter={() => setIsDropdownOpen("investment")}
+            onMouseLeave={() => setIsDropdownOpen(null)}
           >
             <Link to="#" className="nav-link">
-              Investment Calculators ▾
+              📊 Investment Calculators ▾
             </Link>
 
-            {isDropdownOpen && (
+            {isDropdownOpen === "investment" && (
               <div className="dropdown-menu">
-                {calculators.map((calc) => (
+                {investmentCalculators.map((calc) => (
                   <Link
                     key={calc.path}
                     to={calc.path}
                     className="dropdown-item"
-                    onClick={() => setIsDropdownOpen(false)}
+                    onClick={() => setIsDropdownOpen(null)}
                   >
                     {calc.name}
                   </Link>
@@ -68,7 +79,33 @@ function App() {
             )}
           </div>
 
-          {/* 🔍 Search Bar Container */}
+          {/* 💰 Financing & Affordability Dropdown */}
+          <div
+            className="nav-dropdown"
+            onMouseEnter={() => setIsDropdownOpen("financing")}
+            onMouseLeave={() => setIsDropdownOpen(null)}
+          >
+            <Link to="#" className="nav-link">
+              💰 Financing & Affordability ▾
+            </Link>
+
+            {isDropdownOpen === "financing" && (
+              <div className="dropdown-menu">
+                {financingCalculators.map((calc) => (
+                  <Link
+                    key={calc.path}
+                    to={calc.path}
+                    className="dropdown-item"
+                    onClick={() => setIsDropdownOpen(null)}
+                  >
+                    {calc.name}
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* 🔍 Search Bar */}
           <div
             className={`search-container ${isSearchFocused ? "focused" : ""}`}
           >
@@ -121,7 +158,7 @@ function App() {
               </button>
             )}
 
-            {/* Search Results Dropdown */}
+            {/* Search Results */}
             {searchTerm && filteredCalculators.length > 0 && (
               <div className="search-results">
                 <div className="search-results-header">
@@ -143,7 +180,6 @@ function App() {
               </div>
             )}
 
-            {/* No Results Message */}
             {searchTerm && filteredCalculators.length === 0 && (
               <div className="search-results">
                 <div className="no-results">
@@ -167,6 +203,7 @@ function App() {
                 </div>
               }
             />
+            {/* Investment Routes */}
             <Route path="/roi" element={<ROICalculatorPage />} />
             <Route
               path="/rental-yield"
@@ -189,6 +226,9 @@ function App() {
               path="/portfolio-analyzer"
               element={<PortfolioAnalyzerPage />}
             />
+
+            {/* Financing & Affordability Routes */}
+            <Route path="/mortgage" element={<MortgageCalculatorPage />} />
           </Routes>
         </main>
 
